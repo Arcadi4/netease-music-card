@@ -1,0 +1,134 @@
+<svg width="320" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="320" height="500">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
+        <style>
+            * {
+                box-sizing: border-box;
+                image-rendering: crisp-edges;
+                image-rendering: -webkit-optimize-contrast;
+                color:black;
+                font-size: 0;
+            }
+
+            html, body {
+                margin: 0;
+                padding: 3px;
+            }
+
+            p {
+                margin: 0;
+                padding: 0;
+            }
+
+            img {
+                margin: 0;
+                padding: 0;
+            }
+
+            .clear {
+                clear: both;
+            }
+
+            .card {
+                display: inline-block;
+                background: white;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: gray 0 0 10px;
+                overflow: hidden;
+            }
+
+            .user {
+                text-align: left;
+                margin: 10px;
+                filter: blur(3px);
+            }
+
+            .avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 100%;
+                vertical-align: middle;
+            }
+
+            .username {
+                line-height: 32px;
+                vertical-align: middle;
+                font-size: 16px;
+                margin-left: 5px;
+            }
+
+            .button {
+                background: #28C131;
+                width: 16px;
+                height: 16px;
+                border-radius: 100%;
+                vertical-align: middle;
+                float: right;
+                margin-top: 8px;
+                margin-right: 3px;
+            }
+
+            .hello {
+                margin: 10px;
+                margin-top: 5px;
+            }
+
+            .neteasecloud {
+                width: 28px;
+                height: 28px;
+                vertical-align: middle;
+            }
+
+            .intro {
+                vertical-align: middle;
+                color: #BA0400;
+                font-size: 16px;
+                margin-left: 10px;
+            }
+
+            .song {
+                margin: 0 auto;
+                width: 260px;
+                font-size: 20px;
+                margin-top: 10px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .singer {
+                margin: 0 auto;
+                width: 260px;
+                margin-top: 5px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                opacity: 0.5;
+                font-size: 16px;
+            }
+
+            .cover {
+                width: 300px;
+                height: 300px;
+                margin-top: 20px;
+            }
+        </style>
+            <div class="card">
+                <div class="user">
+                    <img class="avatar" src="http://p4.music.126.net/SZo1Rx8YJplCru-Hy0NmFg==/109951166302184643.jpg"/>
+                    <a class="username">Nthily</a>
+                    <a class="button"></a>
+                    <div class="clear"></div>
+                </div>
+                <div class="hello">
+                    <img class="neteasecloud" src="https://s1.music.126.net/style/favicon.ico?v20180823" />
+                    <a class="intro">这周听了多达 25 次</a>
+                </div>
+                <p class="song">Awaken (feat. Reichuu) [Flay! Remix]435435345345</p>
+                <p class="singer">CLOUD_ / Reichuu / Flay!</p>
+                <img class="cover" src="https://p1.music.126.net/JkqYWLdIEgKgp942z83Q9Q==/109951166320270203.jpg" />
+            </div>
+        </div>
+    </foreignObject>
+</svg>

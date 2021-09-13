@@ -41,7 +41,6 @@
             .user {
                 text-align: left;
                 margin: 10px;
-                filter: blur(3px);
             }
 
             .avatar {
@@ -116,18 +115,18 @@
         </style>
             <div class="card">
                 <div class="user">
-                    <img class="avatar" src="http://p4.music.126.net/SZo1Rx8YJplCru-Hy0NmFg==/109951166302184643.jpg"/>
+                    <img class="avatar" src="../cache/avatar.jpg"/>
                     <a class="username">Nthily</a>
                     <a class="button"></a>
                     <div class="clear"></div>
                 </div>
                 <div class="hello">
-                    <img class="neteasecloud" src="https://s1.music.126.net/style/favicon.ico?v20180823" />
+                    <img class="neteasecloud" src="../cache/netease.png" />
                     <a class="intro">这周听了多达 25 次</a>
                 </div>
                 <p class="song">Awaken (feat. Reichuu) [Flay! Remix]435435345345</p>
                 <p class="singer">CLOUD_ / Reichuu / Flay!</p>
-                <img class="cover" src="https://p1.music.126.net/JkqYWLdIEgKgp942z83Q9Q==/109951166320270203.jpg" />
+                <img class="cover" src="../cache/cover.jpg" />
             </div>
         </div>
     </foreignObject>

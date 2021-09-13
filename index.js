@@ -2,6 +2,8 @@ require('dotenv').config();
 const { Octokit } = require('@octokit/rest');
 const { user_record, song_detail, user_account } = require('NeteaseCloudMusicApi');
 const axios = require('axios').default;
+const author = "Nthily";
+const repo = "netease-music-card;"
 
 async function getBase64(url) {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
@@ -58,8 +60,6 @@ const {
     <style>
         * {
             box-sizing: border-box;
-            image-rendering: crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
             color:black;
             font-size: 0;
             font-family: 'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif !important;
@@ -231,26 +231,26 @@ const {
         const {
             data: { sha: svgSha }
         } = await octokit.git.createBlob({
-            owner: "Nthily",
-            repo: "neteasemusic-github-profile",
+            owner: author,
+            repo: repo,
             content: svgContent,
             encoding: "base64"
         });
 
         const commits = await octokit.repos.listCommits({
-            owner: "Nthily",
-            repo: "neteasemusic-github-profile",
+            owner: author,
+            repo: repo,
         });
         const lastSha = commits.data[0].sha;
         const {
             data: { sha: treeSHA }
         } =  await octokit.git.createTree({
-            owner: "Nthily",
-            repo: "neteasemusic-github-profile",
+            owner: author,
+            repo: repo,
             tree: [
                 {
                     mode: '100644',
-                    path: "music_card.svg",
+                    path: "card.svg",
                     type: "blob",
                     sha: svgSha
                 }
@@ -260,8 +260,8 @@ const {
         const {
             data: { sha: newSHA }
         } =  await octokit.git.createCommit({
-            owner: "Nthily",
-            repo: "neteasemusic-github-profile",
+            owner: author,
+            repo: repo,
             author: {
                 name: "github-actions[bot]",
                 email: "41898282+github-actions[bot]@users.noreply.github.com",
@@ -275,8 +275,8 @@ const {
             parents: [ lastSha ],
         });
         const result = await octokit.git.updateRef({
-            owner: "Nthily",
-            repo: "neteasemusic-github-profile",
+            owner: author,
+            repo: repo,
             ref: "heads/main",
             sha: newSHA,
         });

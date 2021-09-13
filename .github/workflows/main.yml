@@ -20,3 +20,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USER_ID: 360250391
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
+          REPO: "netease-music-card"
+          AUTHOR: "Nthily"

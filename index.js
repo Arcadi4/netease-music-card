@@ -2,11 +2,9 @@ require('dotenv').config();
 const { Octokit } = require('@octokit/rest');
 const { user_record, song_detail, user_account } = require('NeteaseCloudMusicApi');
 const axios = require('axios').default;
-const author = "Nthily";
-const repo = "netease-music-card";
 
 async function getBase64(url) {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });;
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
     return Buffer.from(response.data, 'binary').toString('base64');
 }
 
@@ -14,6 +12,8 @@ const {
     USER_ID,
     USER_TOKEN,
     GH_TOKEN,
+    AUTHOR,
+    REPO,
 } = process.env;
 
 (async () => {
@@ -231,22 +231,22 @@ const {
         const {
             data: { sha: svgSha }
         } = await octokit.git.createBlob({
-            owner: author,
-            repo: repo,
+            owner: AUTHOR,
+            repo: REPO,
             content: svgContent,
             encoding: "base64"
         });
 
         const commits = await octokit.repos.listCommits({
-            owner: author,
-            repo: repo,
+            owner: AUTHOR,
+            repo: REPO,
         });
         const lastSha = commits.data[0].sha;
         const {
             data: { sha: treeSHA }
         } =  await octokit.git.createTree({
-            owner: author,
-            repo: repo,
+            owner: AUTHOR,
+            repo: REPO,
             tree: [
                 {
                     mode: '100644',
@@ -260,8 +260,8 @@ const {
         const {
             data: { sha: newSHA }
         } =  await octokit.git.createCommit({
-            owner: author,
-            repo: repo,
+            owner: AUTHOR,
+            repo: REPO,
             author: {
                 name: "github-actions[bot]",
                 email: "41898282+github-actions[bot]@users.noreply.github.com",
@@ -275,8 +275,8 @@ const {
             parents: [ lastSha ],
         });
         const result = await octokit.git.updateRef({
-            owner: author,
-            repo: repo,
+            owner: AUTHOR,
+            repo: REPO,
             ref: "heads/main",
             sha: newSHA,
         });

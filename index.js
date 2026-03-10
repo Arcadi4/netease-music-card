@@ -40,6 +40,124 @@ const STYLE = {
     fontStack: "'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif",
 };
 
+// ─── List Card Height Contract ──────────────────────────────────────
+//
+// Three-layer height constraint for list-style SVG cards:
+//   Layer 1: <svg height="H">           — outermost, sets the SVG viewport
+//   Layer 2: <foreignObject height="H">  — MUST equal svg height (critical contract)
+//   Layer 3: .card { height: C }         — inner card = svgHeight - 2*CONTAINER_PADDING
+//
+// If svgHeight !== foreignObjectHeight, the foreignObject is clipped or overflows.
+// If cardHeight > svgHeight - 2*CONTAINER_PADDING, content overflows the card.
+//
+// All values are deterministic integers (px). No CSS intrinsic sizing.
+
+const LIST_CARD_HEIGHT = {
+    // Shared spacing tokens (px)
+    CONTAINER_PADDING: 5,   // outer wrapper padding on each side (total vertical = 10)
+    CARD_PADDING: 20,       // inner card padding on each side (total vertical = 40)
+    HEADER_HEIGHT: 54,      // title (~26px) + subtitle (~16px) + header margin-bottom (15px) - 3px overlap
+    HEADER_MARGIN_BOTTOM: 15, // explicit header bottom margin
+
+    // ── Top Artists ──
+    TOP_ARTISTS_ROW_HEIGHT: 40,   // rank 24px + text + 12px margin-bottom (absorbed)
+    TOP_ARTISTS_ROW_COUNT: 5,
+    TOP_ARTISTS_ROW_MARGIN: 12,   // margin-bottom between rows (last-child: 0)
+
+    // ── Top Tracks ──
+    TOP_TRACKS_ROW_HEIGHT: 46,    // rank 24px + text + badge height + 12px margin-bottom
+    TOP_TRACKS_ROW_COUNT: 5,
+    TOP_TRACKS_ROW_MARGIN: 12,    // margin-bottom between rows (last-child: 0)
+
+    // ── Weekly Overview ──
+    WEEKLY_CELL_HEIGHT: 80,       // value (~34px) + label (~16px) + cell padding
+    WEEKLY_GRID_ROWS: 2,
+    WEEKLY_HEADER_HEIGHT: 64,     // slightly taller header for overview (header padding: 15px)
+};
+
+/**
+ * Compute deterministic pixel heights for a list-style card.
+ *
+ * The three returned values satisfy the critical contract:
+ *   svgHeight === foreignObjectHeight  (always)
+ *   cardHeight === svgHeight - 2 * containerPadding
+ *
+ * @param {object} opts
+ * @param {number} opts.rowCount      - number of rows/grid-rows
+ * @param {number} opts.rowHeight     - height per row (px)
+ * @param {number} opts.headerHeight  - header block height (px)
+ * @param {number} opts.cardPadding   - inner card padding per side (px)
+ * @param {number} opts.containerPadding - outer container padding per side (px)
+ * @param {number} [opts.rowMargin=0] - margin between rows (applied rowCount-1 times)
+ * @returns {{ svgHeight: number, foreignObjectHeight: number, cardHeight: number }}
+ */
+function computeListCardHeight({
+    rowCount,
+    rowHeight,
+    headerHeight,
+    cardPadding,
+    containerPadding,
+    rowMargin = 0,
+}) {
+    const MIN_HEIGHT = 200;
+
+    // Sanitize inputs: NaN, negative, or non-finite → clamp to 0
+    const safe = (v) => (Number.isFinite(v) && v >= 0 ? v : 0);
+    const sRowCount = safe(rowCount);
+    const sRowHeight = safe(rowHeight);
+    const sHeaderHeight = safe(headerHeight);
+    const sCardPadding = safe(cardPadding);
+    const sContainerPadding = safe(containerPadding);
+    const sRowMargin = safe(rowMargin);
+
+    // Content height = header + rows + inter-row margins
+    const rowMargins = sRowCount > 1 ? (sRowCount - 1) * sRowMargin : 0;
+    const contentHeight = sHeaderHeight + sRowCount * sRowHeight + rowMargins;
+
+    // Card height = content + top/bottom card padding
+    const rawCardHeight = contentHeight + sCardPadding * 2;
+
+    // SVG height = card height + top/bottom container padding
+    const rawSvgHeight = rawCardHeight + sContainerPadding * 2;
+
+    // Enforce minimum and round to integer
+    const svgHeight = Math.max(MIN_HEIGHT, Math.ceil(rawSvgHeight));
+    const cardHeight = svgHeight - sContainerPadding * 2;
+
+    return {
+        svgHeight,
+        foreignObjectHeight: svgHeight, // CRITICAL: must always equal svgHeight
+        cardHeight,
+    };
+}
+
+// Pre-computed heights for each renderer (ready for use in tasks 3-5)
+const TOP_ARTISTS_HEIGHT = computeListCardHeight({
+    rowCount: LIST_CARD_HEIGHT.TOP_ARTISTS_ROW_COUNT,
+    rowHeight: LIST_CARD_HEIGHT.TOP_ARTISTS_ROW_HEIGHT,
+    headerHeight: LIST_CARD_HEIGHT.HEADER_HEIGHT,
+    cardPadding: LIST_CARD_HEIGHT.CARD_PADDING,
+    containerPadding: LIST_CARD_HEIGHT.CONTAINER_PADDING,
+    rowMargin: LIST_CARD_HEIGHT.TOP_ARTISTS_ROW_MARGIN,
+});
+
+const TOP_TRACKS_HEIGHT = computeListCardHeight({
+    rowCount: LIST_CARD_HEIGHT.TOP_TRACKS_ROW_COUNT,
+    rowHeight: LIST_CARD_HEIGHT.TOP_TRACKS_ROW_HEIGHT,
+    headerHeight: LIST_CARD_HEIGHT.HEADER_HEIGHT,
+    cardPadding: LIST_CARD_HEIGHT.CARD_PADDING,
+    containerPadding: LIST_CARD_HEIGHT.CONTAINER_PADDING,
+    rowMargin: LIST_CARD_HEIGHT.TOP_TRACKS_ROW_MARGIN,
+});
+
+const WEEKLY_OVERVIEW_HEIGHT = computeListCardHeight({
+    rowCount: LIST_CARD_HEIGHT.WEEKLY_GRID_ROWS,
+    rowHeight: LIST_CARD_HEIGHT.WEEKLY_CELL_HEIGHT,
+    headerHeight: LIST_CARD_HEIGHT.WEEKLY_HEADER_HEIGHT,
+    cardPadding: LIST_CARD_HEIGHT.CARD_PADDING,
+    containerPadding: LIST_CARD_HEIGHT.CONTAINER_PADDING,
+});
+
 // ─── Stats Derivation ────────────────────────────────────────────────
 function safeWeekData(rawBody) {
     return rawBody?.weekData ?? [];

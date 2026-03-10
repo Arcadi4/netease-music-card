@@ -14,7 +14,7 @@
                 box-shadow: gray 0 0 10px;
                 overflow: hidden;
                 padding: 20px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
             }
@@ -81,7 +81,7 @@
         </style>
             <div class="card">
                 <div class="header">
-                    <div class="title">本周 Top 艺术家</div>
+                    <div class="title">本周最爱歌手</div>
                     <div class="subtitle">Weekly Top Artists</div>
                 </div>
                 <div class="list">

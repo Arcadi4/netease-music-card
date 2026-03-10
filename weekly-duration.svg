@@ -14,7 +14,7 @@
                 box-shadow: gray 0 0 10px;
                 overflow: hidden;
                 padding: 20px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
             }

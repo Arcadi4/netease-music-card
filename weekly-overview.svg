@@ -13,7 +13,7 @@
                 border-radius: 10px;
                 box-shadow: gray 0 0 10px;
                 width: 300px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;

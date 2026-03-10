@@ -514,7 +514,7 @@ async function renderTopArtists(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: 310px;
+                height: full;
                 display: flex;
                 flex-direction: column;
             }
@@ -628,7 +628,7 @@ async function renderTopTracks(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: 320px;
+                height: full;
                 display: flex;
                 flex-direction: column;
             }
@@ -741,7 +741,7 @@ async function renderWeeklyOverview(data) {
                 border-radius: ${STYLE.borderRadius};
                 box-shadow: ${STYLE.shadow};
                 width: 300px;
-                height: 250px;
+                height: full;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -829,15 +829,15 @@ async function renderWeeklyOverview(data) {
 async function renderWeeklyDuration(data) {
     const durations = data.dailyDurations || [];
     const hasData = durations.some(d => d.estimatedMinutes !== null);
-    
+
     let chartHtml = "";
-    
+
     if (!hasData) {
         chartHtml = `<div class="empty-state">暂无数据 / No data</div>`;
     } else {
         const maxMinutes = Math.max(...durations.map(d => d.estimatedMinutes || 0));
         const MAX_BAR_HEIGHT = 100;
-        
+
         const cols = durations.map(d => {
             if (d.estimatedMinutes === null) {
                 return `
@@ -861,7 +861,7 @@ async function renderWeeklyDuration(data) {
                 </div>`;
             }
         }).join('');
-        
+
         chartHtml = `<div class="chart">${cols}</div>`;
     }
 
@@ -884,7 +884,7 @@ async function renderWeeklyDuration(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: 250px;
+                height: full;
                 display: flex;
                 flex-direction: column;
             }
@@ -1020,7 +1020,7 @@ async function commitAll(outputs) {
         let snapshotContent = '{}';
         try {
             snapshotContent = fs.readFileSync(snapshotPath, 'utf8');
-        } catch (e) {}
+        } catch (e) { }
 
         const {
             data: { sha: snapshotSha }
@@ -1099,7 +1099,7 @@ async function commitAll(outputs) {
             weekData: [],
             dailyDurations: Array(7).fill(null).map((_, i) => ({
                 date: null,
-                day: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i],
+                day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
                 estimatedMinutes: null,
             })),
         };

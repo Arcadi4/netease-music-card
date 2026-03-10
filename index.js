@@ -751,8 +751,8 @@ async function renderTopTracks(data) {
                 </div>
                 <div class="plays">${t.plays}</div>
             </div>`).join('') : `<div class="empty">暂无数据 / No data</div>`;
-        svgContent = Buffer.from(`<svg width="${STYLE.width}" height="330" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="330">
+        svgContent = Buffer.from(`<svg width="${STYLE.width}" height="${TOP_TRACKS_HEIGHT.svgHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="${TOP_TRACKS_HEIGHT.foreignObjectHeight}">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -767,7 +767,7 @@ async function renderTopTracks(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: max-content;
+                height: ${TOP_TRACKS_HEIGHT.cardHeight}px;
                 display: flex;
                 flex-direction: column;
             }

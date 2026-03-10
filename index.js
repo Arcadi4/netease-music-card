@@ -798,6 +798,153 @@ async function renderWeeklyOverview(data) {
     return { filename: "weekly-overview.svg", svgBase64: svgContent };
 }
 
+async function renderWeeklyDuration(data) {
+    const durations = data.dailyDurations || [];
+    const hasData = durations.some(d => d.estimatedMinutes !== null);
+    
+    let chartHtml = "";
+    
+    if (!hasData) {
+        chartHtml = `<div class="empty-state">暂无数据 / No data</div>`;
+    } else {
+        const maxMinutes = Math.max(...durations.map(d => d.estimatedMinutes || 0));
+        const MAX_BAR_HEIGHT = 100;
+        
+        const cols = durations.map(d => {
+            if (d.estimatedMinutes === null) {
+                return `
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">${d.day}</div>
+                </div>`;
+            } else {
+                const height = maxMinutes > 0 ? (d.estimatedMinutes / maxMinutes) * MAX_BAR_HEIGHT : 10;
+                const minHeight = Math.max(height, 10);
+                return `
+                <div class="bar-col">
+                    <div class="bar-label-top">${Math.round(d.estimatedMinutes)}m</div>
+                    <div class="bar-wrap">
+                        <div class="bar filled" style="height: ${minHeight}px;"></div>
+                    </div>
+                    <div class="bar-day">${d.day}</div>
+                </div>`;
+            }
+        }).join('');
+        
+        chartHtml = `<div class="chart">${cols}</div>`;
+    }
+
+    var svgContent = "";
+    try {
+        svgContent = Buffer.from(
+            `<svg width="${STYLE.width}" height="260" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="260">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: ${STYLE.fontStack} !important;
+                margin: 0;
+                padding: 0;
+            }
+            .card {
+                background: white;
+                border-radius: ${STYLE.borderRadius};
+                box-shadow: ${STYLE.shadow};
+                overflow: hidden;
+                padding: 20px;
+                height: 250px;
+                display: flex;
+                flex-direction: column;
+            }
+            .header {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            .title {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+            }
+            .subtitle {
+                font-size: 12px;
+                color: #888;
+                margin-top: 2px;
+            }
+            .chart {
+                flex-grow: 1;
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                padding: 0 10px;
+            }
+            .bar-col {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                height: 100%;
+                width: 30px;
+            }
+            .bar-label-top {
+                font-size: 10px;
+                color: #666;
+                margin-bottom: 4px;
+                height: 12px;
+            }
+            .bar-wrap {
+                width: 100%;
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                height: 100px;
+            }
+            .bar {
+                width: 16px;
+                border-radius: 3px 3px 0 0;
+            }
+            .bar.filled {
+                background: ${STYLE.accent};
+            }
+            .bar.empty {
+                background: #e0e0e0;
+                height: 10px !important;
+            }
+            .bar-day {
+                font-size: 11px;
+                color: #888;
+                margin-top: 8px;
+            }
+            .empty-state {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #888;
+            }
+        </style>
+            <div class="card">
+                <div class="header">
+                    <div class="title">本周听歌时长</div>
+                    <div class="subtitle">估算时长 · Estimated</div>
+                </div>
+                ${chartHtml}
+            </div>
+        </div>
+    </foreignObject>
+</svg>`
+        ).toString("base64");
+    } catch (err) {
+        console.error(`weekly-duration SVG error: ${err}`);
+    }
+
+    return { filename: "weekly-duration.svg", svgBase64: svgContent };
+}
+
 async function generateAllCards(data) {
     const outputs = [];
 
@@ -809,6 +956,7 @@ async function generateAllCards(data) {
     outputs.push(await renderTopArtists(data));
     outputs.push(await renderTopTracks(data));
     outputs.push(await renderWeeklyOverview(data));
+    outputs.push(await renderWeeklyDuration(data));
     // outputs.push(await renderTopList(data));
     // outputs.push(await renderStats(data));
 

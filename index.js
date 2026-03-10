@@ -18,6 +18,14 @@ const {
     REPO,
 } = process.env;
 
+// ─── Preflight Validation ──────────────────────────────────────────
+const REQUIRED_ENVS = ['USER_ID', 'USER_TOKEN', 'GH_TOKEN', 'AUTHOR', 'REPO'];
+const missingEnvs = REQUIRED_ENVS.filter(k => !process.env[k]);
+if (missingEnvs.length > 0) {
+    console.error(`[preflight] Missing required environment variables: ${missingEnvs.join(', ')}`);
+    process.exit(1);
+}
+
 // ─── Shared Style Tokens ────────────────────────────────────────────
 const STYLE = {
     width: 310,
@@ -199,10 +207,18 @@ function deriveDailyDurations(snapshot, avgMinPerSong) {
 
 // ─── Data Fetching Layer ────────────────────────────────────────────
 async function fetchData(cookie, userId) {
-    const account = await user_account({ cookie });
+    let account;
+    try {
+        account = await user_account({ cookie });
+    } catch (err) {
+        throw new Error(`[auth] user_account request failed: ${err.message || err}`);
+    }
+    if (!account?.body?.profile) {
+        throw new Error('[auth] Cookie appears invalid or expired — user_account returned no profile');
+    }
 
-    const avatarUrl = account.body.profile.avatarUrl + "?param=128y128"; // 压缩
-    console.log(`个人头像: ${avatarUrl}`);
+    const avatarUrl = account.body.profile.avatarUrl + "?param=128y128";
+    console.log(`[info] avatar: ${avatarUrl}`);
 
     const nickname = account.body.profile.nickname;
 
@@ -210,7 +226,14 @@ async function fetchData(cookie, userId) {
         cookie,
         uid: userId,
         type: 1,
-    }).catch(error => console.error(`无法获取用户播放记录 \n${error}`));
+    }).catch(error => {
+        console.error(`[error] Failed to fetch user play record: ${error}`);
+        return null;
+    });
+
+    if (!record?.body) {
+        throw new Error('[auth] Could not retrieve play records — cookie may be expired');
+    }
 
     const content = record.body;
     const weekData = safeWeekData(content);
@@ -988,6 +1011,27 @@ async function commitAll(outputs) {
             });
         }
 
+        const snapshotPath = path.resolve(__dirname, 'duration-snapshot.json');
+        let snapshotContent = '{}';
+        try {
+            snapshotContent = fs.readFileSync(snapshotPath, 'utf8');
+        } catch (e) {}
+
+        const {
+            data: { sha: snapshotSha }
+        } = await octokit.git.createBlob({
+            owner: AUTHOR,
+            repo: REPO,
+            content: snapshotContent,
+            encoding: "utf-8"
+        });
+        blobEntries.push({
+            mode: '100644',
+            path: 'duration-snapshot.json',
+            type: "blob",
+            sha: snapshotSha,
+        });
+
         const commits = await octokit.repos.listCommits({
             owner: AUTHOR,
             repo: REPO,
@@ -1015,7 +1059,7 @@ async function commitAll(outputs) {
                 email: "41898282+github-actions[bot]@users.noreply.github.com",
             },
             tree: treeSHA,
-            message: 'Update SVG periodically',
+            message: 'Update music cards and duration snapshot',
             parents: [lastSha],
         });
         const result = await octokit.git.updateRef({

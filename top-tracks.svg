@@ -1,5 +1,5 @@
-<svg width="310" height="330" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="310" height="330">
+<svg width="310" height="382" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="310" height="382">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -14,7 +14,7 @@
                 box-shadow: gray 0 0 10px;
                 overflow: hidden;
                 padding: 20px;
-                height: max-content;
+                height: 372px;
                 display: flex;
                 flex-direction: column;
             }
@@ -104,7 +104,7 @@
                     <div class="title">Don't Be So Serious</div>
                     <div class="sub">Low Roar</div>
                 </div>
-                <div class="plays">10</div>
+                <div class="plays">8</div>
             </div>
             <div class="row">
                 <div class="rank">2</div>
@@ -112,31 +112,31 @@
                     <div class="title">NEXUS</div>
                     <div class="sub">Laco</div>
                 </div>
-                <div class="plays">10</div>
+                <div class="plays">8</div>
             </div>
             <div class="row">
                 <div class="rank">3</div>
                 <div class="info">
-                    <div class="title">Minus Sixty One</div>
-                    <div class="sub">Woodkid</div>
+                    <div class="title">覚醒</div>
+                    <div class="sub">Superfly</div>
                 </div>
-                <div class="plays">9</div>
+                <div class="plays">7</div>
             </div>
             <div class="row">
                 <div class="rank">4</div>
                 <div class="info">
-                    <div class="title">群青</div>
-                    <div class="sub">YOASOBI</div>
+                    <div class="title">花に亡霊</div>
+                    <div class="sub">ヨルシカ</div>
                 </div>
-                <div class="plays">8</div>
+                <div class="plays">5</div>
             </div>
             <div class="row">
                 <div class="rank">5</div>
                 <div class="info">
-                    <div class="title">BRE@TH//LESS</div>
-                    <div class="sub">小林未郁</div>
+                    <div class="title">茜さす 帰路照らされど…</div>
+                    <div class="sub">椎名林檎</div>
                 </div>
-                <div class="plays">7</div>
+                <div class="plays">4</div>
             </div>
                 </div>
             </div>

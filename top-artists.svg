@@ -1,5 +1,5 @@
-<svg width="310" height="320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="310" height="320">
+<svg width="310" height="352" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="310" height="352">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -14,7 +14,7 @@
                 box-shadow: gray 0 0 10px;
                 overflow: hidden;
                 padding: 20px;
-                height: max-content;
+                height: 342px;
                 display: flex;
                 flex-direction: column;
             }
@@ -98,7 +98,7 @@
                     <div class="rank">2</div>
                     <div class="info">
                         <div class="name">Low Roar</div>
-                        <div class="plays">15 plays</div>
+                        <div class="plays">13 plays</div>
                     </div>
                 </div>
             
@@ -106,7 +106,7 @@
                     <div class="rank">3</div>
                     <div class="info">
                         <div class="name">SawanoHiroyuki[nZk]</div>
-                        <div class="plays">15 plays</div>
+                        <div class="plays">12 plays</div>
                     </div>
                 </div>
             
@@ -114,7 +114,7 @@
                     <div class="rank">4</div>
                     <div class="info">
                         <div class="name">Laco</div>
-                        <div class="plays">14 plays</div>
+                        <div class="plays">11 plays</div>
                     </div>
                 </div>
             

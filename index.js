@@ -446,6 +446,131 @@ async function renderCard(data) {
 }
 
 // ─── Renderer Registry ──────────────────────────────────────────────
+async function renderTopArtists(data) {
+    const artists = deriveTopArtists(data.weekData, 5);
+    let artistRows = "";
+
+    if (artists.length === 0) {
+        artistRows = `<div class="empty-state">暂无数据 / No data</div>`;
+    } else {
+        artists.forEach((artist, index) => {
+            const rank = index + 1;
+            artistRows += `
+                <div class="row">
+                    <div class="rank">${rank}</div>
+                    <div class="info">
+                        <div class="name">${artist.name}</div>
+                        <div class="plays">${artist.plays} plays</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    var svgContent = "";
+    try {
+        svgContent = Buffer.from(
+            `<svg width="${STYLE.width}" height="320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="320">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: ${STYLE.fontStack} !important;
+                margin: 0;
+                padding: 0;
+            }
+            .card {
+                background: white;
+                border-radius: ${STYLE.borderRadius};
+                box-shadow: ${STYLE.shadow};
+                overflow: hidden;
+                padding: 20px;
+                height: 310px;
+                display: flex;
+                flex-direction: column;
+            }
+            .header {
+                margin-bottom: 15px;
+            }
+            .title {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+            }
+            .subtitle {
+                font-size: 12px;
+                color: #888;
+                margin-top: 2px;
+            }
+            .row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+            .row:last-child {
+                margin-bottom: 0;
+            }
+            .rank {
+                background: ${STYLE.accent};
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                width: 24px;
+                height: 24px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+                flex-shrink: 0;
+            }
+            .info {
+                flex-grow: 1;
+                overflow: hidden;
+            }
+            .name {
+                font-size: 14px;
+                color: #333;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .plays {
+                font-size: 12px;
+                color: #888;
+                margin-top: 2px;
+            }
+            .empty-state {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #888;
+            }
+        </style>
+            <div class="card">
+                <div class="header">
+                    <div class="title">本周 Top 艺术家</div>
+                    <div class="subtitle">Weekly Top Artists</div>
+                </div>
+                <div class="list">
+                    ${artistRows}
+                </div>
+            </div>
+        </div>
+    </foreignObject>
+</svg>`
+        ).toString("base64");
+    } catch (err) {
+        console.error(`top-artists SVG error: ${err}`);
+    }
+
+    return { filename: "top-artists.svg", svgBase64: svgContent };
+}
+
 async function generateAllCards(data) {
     const outputs = [];
 
@@ -454,6 +579,7 @@ async function generateAllCards(data) {
     outputs.push(card);
 
     // Future renderers go here:
+    outputs.push(await renderTopArtists(data));
     // outputs.push(await renderTopList(data));
     // outputs.push(await renderStats(data));
 

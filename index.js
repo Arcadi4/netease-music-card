@@ -247,11 +247,16 @@ async function fetchData(cookie, userId) {
     const songDetailResult = await song_detail({
         cookie,
         ids: songId,
-    }).catch(error => console.error(`无法获取歌曲信息 \n${error}`));
+    }).catch(error => {
+        console.error(`[error] Failed to fetch song detail: ${error}`);
+        return null;
+    });
 
-    const songCover = songDetailResult.body.songs[0].al.picUrl + "?param=300y300";
+    const songCover = songDetailResult?.body?.songs?.[0]?.al?.picUrl
+        ? songDetailResult.body.songs[0].al.picUrl + "?param=300y300"
+        : '';
 
-    console.log(`歌曲名：${songName}\n歌曲作者：${songAuthors}\n歌曲封面：${songCover}\n播放次数：${playCount}`);
+    console.log(`[info] song=${songName} artists=${songAuthors} plays=${playCount}`);
 
     let dailyDurations = [
         { date: null, day: 'Mon', estimatedMinutes: null },
@@ -267,14 +272,14 @@ async function fetchData(cookie, userId) {
     try {
         const detailResult = await user_detail({ cookie, uid: userId });
         const listenSongs = detailResult.body.profile.listenSongs;
-        console.log(`累计听歌：${listenSongs}`);
+        console.log(`[info] total listen count: ${listenSongs}`);
 
         let snapshot = loadDurationSnapshot(snapshotPath);
         snapshot = updateDurationSnapshot(snapshot, listenSongs);
         saveDurationSnapshot(snapshotPath, snapshot);
         dailyDurations = deriveDailyDurations(snapshot);
     } catch (err) {
-        console.error(`获取用户详情或更新快照失败：${err}`);
+        console.error(`[error] Failed to update duration snapshot: ${err}`);
     }
 
     return {
@@ -971,17 +976,17 @@ async function renderWeeklyDuration(data) {
 async function generateAllCards(data) {
     const outputs = [];
 
-    // card.svg — main player card
-    const card = await renderCard(data);
-    outputs.push(card);
+    if (data._fallback) {
+        console.log('[info] Fallback mode — skipping card.svg (requires image fetching)');
+    } else {
+        const card = await renderCard(data);
+        outputs.push(card);
+    }
 
-    // Future renderers go here:
     outputs.push(await renderTopArtists(data));
     outputs.push(await renderTopTracks(data));
     outputs.push(await renderWeeklyOverview(data));
     outputs.push(await renderWeeklyDuration(data));
-    // outputs.push(await renderTopList(data));
-    // outputs.push(await renderStats(data));
 
     return outputs;
 }
@@ -1068,7 +1073,7 @@ async function commitAll(outputs) {
             ref: "heads/main",
             sha: newSHA,
         });
-        console.log(result);
+        console.log(`[info] Ref updated: ${result.data?.ref ?? 'unknown'} -> ${newSHA}`);
     } catch (err) {
         console.error(`上传 SVG 时发生了错误：${err}`);
     }
@@ -1077,7 +1082,28 @@ async function commitAll(outputs) {
 // ─── Main ───────────────────────────────────────────────────────────
 (async () => {
     const cookie = `MUSIC_U=${USER_TOKEN}`;
-    const data = await fetchData(cookie, USER_ID);
+    let data;
+    try {
+        data = await fetchData(cookie, USER_ID);
+    } catch (err) {
+        console.error(`[auth] Cookie appears invalid or expired — falling back to empty data`);
+        console.error(`[auth] Detail: ${err.message || err}`);
+        data = {
+            _fallback: true,
+            avatarUrl: '',
+            nickname: '\u2013',
+            songName: '\u6682\u65E0\u6570\u636E',
+            songAuthors: '\u2013',
+            songCover: '',
+            playCount: 0,
+            weekData: [],
+            dailyDurations: Array(7).fill(null).map((_, i) => ({
+                date: null,
+                day: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i],
+                estimatedMinutes: null,
+            })),
+        };
+    }
     const outputs = await generateAllCards(data);
     await commitAll(outputs);
 })();

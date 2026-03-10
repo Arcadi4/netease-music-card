@@ -1,8 +1,8 @@
 Fixture-based E2E Verification — Task 10
-Date: 2026-03-10T20:39:51.930Z
+Date: 2026-03-10T22:43:46.341Z
 Node: v25.8.0
 
-Total checks: 27 passed, 0 failed
+Total checks: 35 passed, 0 failed
 
 PASS: deriveTopArtists: returns 5 artists
 PASS: deriveTopArtists: #1 is SICK HACK (72 plays)
@@ -15,6 +15,14 @@ PASS: deriveTopArtists(zero-play): falls back to score, #1 is SICK HACK
 PASS: deriveTopTracks(zero-play): #1 is 孤独摇滚 (score=85)
 PASS: deriveTopArtists(empty): returns []
 PASS: deriveWeeklyOverview(empty): totalPlays=0
+PASS: extractListenSongs: top-level body.listenSongs
+PASS: extractListenSongs: fallback profile.listenSongs
+PASS: extractListenSongs: undefined throws [duration] error
+PASS: extractListenSongs: negative throws [duration] error
+PASS: updateDurationSnapshot: writes today key with value
+PASS: updateDurationSnapshot: null throws
+PASS: updateDurationSnapshot: string throws
+PASS: deriveDailyDurations: two-day delta gives estimatedMinutes
 PASS: renderTopArtists(normal) (4396 bytes)
 PASS: renderTopTracks(normal) (4861 bytes)
 PASS: renderWeeklyOverview(normal) (3235 bytes)

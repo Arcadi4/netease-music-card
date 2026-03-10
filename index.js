@@ -637,8 +637,8 @@ async function renderTopArtists(data) {
     var svgContent = "";
     try {
         svgContent = Buffer.from(
-            `<svg width="${STYLE.width}" height="320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="320">
+            `<svg width="${STYLE.width}" height="${TOP_ARTISTS_HEIGHT.svgHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="${TOP_ARTISTS_HEIGHT.foreignObjectHeight}">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -653,7 +653,7 @@ async function renderTopArtists(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: max-content;
+                height: ${TOP_ARTISTS_HEIGHT.cardHeight}px;
                 display: flex;
                 flex-direction: column;
             }

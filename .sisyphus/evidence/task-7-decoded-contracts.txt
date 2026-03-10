@@ -1,0 +1,50 @@
+=== REGRESSION CONTRACT CHECKS ===
+Generated: 2026-03-10T23:00:07.136Z
+
+--- top-artists ---
+index.js uses:
+  svg height: TOP_ARTISTS_HEIGHT.svgHeight (computed: 352)
+  foreignObject height: TOP_ARTISTS_HEIGHT.foreignObjectHeight (computed: 352)
+  card CSS height: 342px
+  svgHeight === foreignObjectHeight: TRUE: ✓
+  source uses TOP_ARTISTS_HEIGHT.svgHeight for <svg>: ✓
+  source uses TOP_ARTISTS_HEIGHT.foreignObjectHeight for <foreignObject>: ✓
+  source uses TOP_ARTISTS_HEIGHT.cardHeight for CSS: ✓
+  verify.js: renderTopArtists(normal) passed: ✓
+  verify.js: renderTopArtists(empty) passed: ✓
+  verify.js: renderTopArtists(zero-play) passed: ✓
+  verify.js: deriveTopArtists returns 5 artists: ✓
+  verify.js: zero-play fallback works: ✓
+
+--- top-tracks ---
+index.js uses:
+  svg height: TOP_TRACKS_HEIGHT.svgHeight (computed: 382)
+  foreignObject height: TOP_TRACKS_HEIGHT.foreignObjectHeight (computed: 382)
+  card CSS height: 372px
+  svgHeight === foreignObjectHeight: TRUE: ✓
+  source uses TOP_TRACKS_HEIGHT.svgHeight for <svg>: ✓
+  source uses TOP_TRACKS_HEIGHT.foreignObjectHeight for <foreignObject>: ✓
+  source uses TOP_TRACKS_HEIGHT.cardHeight for CSS: ✓
+  verify.js: renderTopTracks(normal) passed: ✓
+  verify.js: renderTopTracks(empty) passed: ✓
+  verify.js: renderTopTracks(zero-play) passed: ✓
+  verify.js: deriveTopTracks returns 5 tracks: ✓
+
+--- weekly-overview ---
+index.js uses:
+  svg height: WEEKLY_OVERVIEW_HEIGHT.svgHeight (computed: 274)
+  foreignObject height: WEEKLY_OVERVIEW_HEIGHT.foreignObjectHeight (computed: 274)
+  card CSS height: 264px
+  svgHeight === foreignObjectHeight: TRUE: ✓
+  source uses WEEKLY_OVERVIEW_HEIGHT.svgHeight for <svg>: ✓
+  source uses WEEKLY_OVERVIEW_HEIGHT.foreignObjectHeight for <foreignObject>: ✓
+  source uses WEEKLY_OVERVIEW_HEIGHT.cardHeight for CSS: ✓
+  verify.js: renderWeeklyOverview(normal) passed: ✓
+  verify.js: renderWeeklyOverview(empty) passed: ✓
+  verify.js: renderWeeklyOverview(empty) shows 0 totalPlays: ✓
+  Cell spacing guardrails in source:
+    .cell has min-height: 60px: ✓
+    .cell has padding: 12px 8px: ✓
+    All 4 cell labels present in source: ✓
+
+=== ALL CHECKS PASSED ===

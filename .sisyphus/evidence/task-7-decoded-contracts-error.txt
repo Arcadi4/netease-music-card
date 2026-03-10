@@ -1,0 +1,19 @@
+=== NEGATIVE CASE: Malformed SVG Height Mismatch Detection ===
+Generated: 2026-03-10T23:00:32.869Z
+
+Test: SVG with height=300, foreignObject height=250
+  Expected: mismatch detected (ok === false)
+  Actual ok: false
+  svgHeight: 300
+  foreignObjectHeight: 250
+  error: MISMATCH: svg=300 foreignObject=250
+  RESULT: Mismatch correctly detected ✓
+
+Test: SVG with height=352, foreignObject height=352 (well-formed)
+  Expected: no mismatch (ok === true)
+  Actual ok: true
+  svgHeight: 352
+  foreignObjectHeight: 352
+  RESULT: Correctly accepted well-formed SVG ✓
+
+=== NEGATIVE CASE VALIDATION PASSED ===

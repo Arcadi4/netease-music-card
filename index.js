@@ -293,15 +293,15 @@ function updateDurationSnapshot(snapshot, listenSongs) {
 function extractListenSongs(detailResult) {
     // Diagnostic: log available keys to help debug API response structure
     console.log(`[debug] Available keys in detailResult.body: ${JSON.stringify(Object.keys(detailResult?.body || {}))}`);
-    
+
     // Try top-level listenSongs first, then fall back to profile.listenSongs
     let listenSongs = detailResult?.body?.listenSongs ?? detailResult?.body?.profile?.listenSongs;
-    
+
     // Validate that the value is a finite non-negative number
     if (!Number.isFinite(listenSongs) || listenSongs < 0) {
         throw new Error(`[duration] Invalid listenSongs value: ${listenSongs}`);
     }
-    
+
     return listenSongs;
 }
 
@@ -524,7 +524,6 @@ async function renderCard(data) {
                 vertical-align: middle;
                 color: ${STYLE.accent};
                 font-size: 16px;
-                margin-left: 10px;
             }
 
             .song {

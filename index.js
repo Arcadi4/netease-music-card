@@ -517,7 +517,7 @@ async function renderTopArtists(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
             }
@@ -584,7 +584,7 @@ async function renderTopArtists(data) {
         </style>
             <div class="card">
                 <div class="header">
-                    <div class="title">本周 Top 艺术家</div>
+                    <div class="title">本周最爱歌手</div>
                     <div class="subtitle">Weekly Top Artists</div>
                 </div>
                 <div class="list">
@@ -631,7 +631,7 @@ async function renderTopTracks(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
             }
@@ -710,7 +710,7 @@ async function renderTopTracks(data) {
         </style>
             <div class="card">
                 <div class="header">
-                    <div class="title-header">本周 Top 歌曲</div>
+                    <div class="title-header">本周最爱歌曲</div>
                     <div class="subtitle">Weekly Top Tracks</div>
                 </div>
                 <div class="list">
@@ -744,7 +744,7 @@ async function renderWeeklyOverview(data) {
                 border-radius: ${STYLE.borderRadius};
                 box-shadow: ${STYLE.shadow};
                 width: 300px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -887,7 +887,7 @@ async function renderWeeklyDuration(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: auto;
+                height: max-content;
                 display: flex;
                 flex-direction: column;
             }

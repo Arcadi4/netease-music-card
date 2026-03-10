@@ -1,5 +1,5 @@
 Fixture-based E2E Verification — Task 10
-Date: 2026-03-10T22:50:19.109Z
+Date: 2026-03-10T22:54:51.666Z
 Node: v25.8.0
 
 Total checks: 35 passed, 0 failed
@@ -23,18 +23,18 @@ PASS: updateDurationSnapshot: writes today key with value
 PASS: updateDurationSnapshot: null throws
 PASS: updateDurationSnapshot: string throws
 PASS: deriveDailyDurations: two-day delta gives estimatedMinutes
-PASS: renderTopArtists(normal) (4396 bytes)
-PASS: renderTopTracks(normal) (4861 bytes)
-PASS: renderWeeklyOverview(normal) (3235 bytes)
+PASS: renderTopArtists(normal) (4430 bytes)
+PASS: renderTopTracks(normal) (4897 bytes)
+PASS: renderWeeklyOverview(normal) (3344 bytes)
 PASS: renderWeeklyDuration(normal) (5278 bytes)
-PASS: renderTopArtists(empty) (2959 bytes, empty-state)
-PASS: renderTopTracks(empty) (3340 bytes, empty-state)
-PASS: renderWeeklyOverview(empty) (3230 bytes)
+PASS: renderTopArtists(empty) (2993 bytes, empty-state)
+PASS: renderTopTracks(empty) (3376 bytes, empty-state)
+PASS: renderWeeklyOverview(empty) (3339 bytes)
 PASS: renderWeeklyOverview(empty): shows 0 totalPlays
 PASS: renderWeeklyDuration(empty) (3086 bytes, empty-state)
-PASS: renderTopArtists(zero-play) (4397 bytes)
+PASS: renderTopArtists(zero-play) (4431 bytes)
 PASS: renderTopArtists(zero-play): contains SICK HACK
-PASS: renderTopTracks(zero-play) (4865 bytes)
+PASS: renderTopTracks(zero-play) (4901 bytes)
 PASS: renderTopArtists filename
 PASS: renderTopTracks filename
 PASS: renderWeeklyOverview filename

@@ -213,8 +213,8 @@ async function renderTopArtists(data) {
     var svgContent = "";
     try {
         svgContent = Buffer.from(
-            `<svg width="${STYLE.width}" height="320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="320">
+            `<svg width="${STYLE.width}" height="352" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="352">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -229,7 +229,7 @@ async function renderTopArtists(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: 310px;
+                height: 342px; /* TOP_ARTISTS_HEIGHT.cardHeight */
                 display: flex;
                 flex-direction: column;
             }
@@ -296,7 +296,7 @@ async function renderTopArtists(data) {
         </style>
             <div class="card">
                 <div class="header">
-                    <div class="title">\u672C\u5468 Top \u827A\u672F\u5BB6</div>
+                    <div class="title">\u672C\u5468\u6700\u7231\u6B4C\u624B</div>
                     <div class="subtitle">Weekly Top Artists</div>
                 </div>
                 <div class="list">
@@ -327,8 +327,8 @@ async function renderTopTracks(data) {
                 </div>
                 <div class="plays">${t.plays}</div>
             </div>`).join('') : `<div class="empty">\u6682\u65E0\u6570\u636E / No data</div>`;
-        svgContent = Buffer.from(`<svg width="${STYLE.width}" height="330" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="330">
+        svgContent = Buffer.from(`<svg width="${STYLE.width}" height="382" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="382">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
@@ -343,7 +343,7 @@ async function renderTopTracks(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: 320px;
+                height: 372px; /* TOP_TRACKS_HEIGHT.cardHeight */
                 display: flex;
                 flex-direction: column;
             }
@@ -422,7 +422,7 @@ async function renderTopTracks(data) {
         </style>
             <div class="card">
                 <div class="header">
-                    <div class="title-header">\u672C\u5468 Top \u6B4C\u66F2</div>
+                    <div class="title-header">\u672C\u5468\u6700\u7231\u6B4C\u66F2</div>
                     <div class="subtitle">Weekly Top Tracks</div>
                 </div>
                 <div class="list">
@@ -441,8 +441,8 @@ async function renderWeeklyOverview(data) {
     try {
         const stats = deriveWeeklyOverview(data.weekData);
         svgContent = Buffer.from(
-            `<svg width="${STYLE.width}" height="260" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="260">
+            `<svg width="${STYLE.width}" height="274" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="274">
         <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 5px;">
         <style>
             * {
@@ -456,7 +456,7 @@ async function renderWeeklyOverview(data) {
                 border-radius: ${STYLE.borderRadius};
                 box-shadow: ${STYLE.shadow};
                 width: 300px;
-                height: 250px;
+                height: 264px; /* WEEKLY_OVERVIEW_HEIGHT.cardHeight */
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -489,6 +489,8 @@ async function renderWeeklyOverview(data) {
                 align-items: center;
                 border-right: 1px solid #f5f5f5;
                 border-bottom: 1px solid #f5f5f5;
+                min-height: 60px;
+                padding: 12px 8px;
             }
             .cell:nth-child(2n) {
                 border-right: none;

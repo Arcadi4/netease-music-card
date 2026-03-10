@@ -1,4 +1,4 @@
-<div align="center"><img src="card.svg"></div>
+<div align="center"><img src="https://github.com/Arcadi4/netease-music-card/blob/svg/card.svg"></div>
 
 <div align="center"><h1>neteasemusic-github-profile</h1></div>
 

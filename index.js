@@ -1,7 +1,9 @@
 require('dotenv').config();
 const { Octokit } = require('@octokit/rest');
-const { user_record, song_detail, user_account } = require('NeteaseCloudMusicApi');
+const { user_record, song_detail, user_account, user_detail } = require('NeteaseCloudMusicApi');
 const axios = require('axios').default;
+const fs = require('fs');
+const path = require('path');
 
 async function getBase64(url) {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
@@ -27,6 +29,174 @@ const STYLE = {
     fontStack: "'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif",
 };
 
+// ─── Stats Derivation ────────────────────────────────────────────────
+function safeWeekData(rawBody) {
+    return rawBody?.weekData ?? [];
+}
+
+function safePlays(entry) {
+    return entry?.playCount > 0 ? entry.playCount : (entry?.score ?? 0);
+}
+
+function deriveTopArtists(weekData, n = 5) {
+    if (!Array.isArray(weekData) || weekData.length === 0) {
+        return [];
+    }
+
+    const allPlayCountZero = weekData.every(entry => (entry?.playCount ?? 0) === 0);
+    const getPlays = allPlayCountZero ? safePlays : (entry => entry?.playCount ?? 0);
+    const artistMap = new Map();
+
+    for (const entry of weekData) {
+        const plays = getPlays(entry);
+        const artists = entry?.song?.ar ?? [];
+        for (const artist of artists) {
+            if (artist?.id == null) {
+                continue;
+            }
+
+            if (!artistMap.has(artist.id)) {
+                artistMap.set(artist.id, {
+                    id: artist.id,
+                    name: artist.name,
+                    plays: 0,
+                });
+            }
+            artistMap.get(artist.id).plays += plays;
+        }
+    }
+
+    return [...artistMap.values()]
+        .sort((a, b) => b.plays - a.plays)
+        .slice(0, n);
+}
+
+function deriveWeeklyOverview(weekData) {
+    if (!Array.isArray(weekData) || weekData.length === 0) {
+        return {
+            totalPlays: 0,
+            uniqueSongs: 0,
+            uniqueArtists: 0,
+            repeatIntensity: 0,
+        };
+    }
+
+    const uniqueSongIds = new Set();
+    const uniqueArtistIds = new Set();
+    let totalPlays = 0;
+    let maxPlayCount = 0;
+
+    for (const entry of weekData) {
+        const plays = safePlays(entry);
+        totalPlays += plays;
+        if (plays > maxPlayCount) {
+            maxPlayCount = plays;
+        }
+
+        const songId = entry?.song?.id;
+        if (songId != null) {
+            uniqueSongIds.add(songId);
+        }
+
+        const artists = entry?.song?.ar ?? [];
+        for (const artist of artists) {
+            if (artist?.id != null) {
+                uniqueArtistIds.add(artist.id);
+            }
+        }
+    }
+
+    return {
+        totalPlays,
+        uniqueSongs: uniqueSongIds.size,
+        uniqueArtists: uniqueArtistIds.size,
+        repeatIntensity: totalPlays > 0 ? (maxPlayCount / totalPlays * 100).toFixed(1) : 0,
+    };
+}
+
+function deriveTopTracks(weekData, n = 5) {
+    if (!Array.isArray(weekData) || weekData.length === 0) {
+        return [];
+    }
+
+    const allPlayCountZero = weekData.every(entry => (entry?.playCount ?? 0) === 0);
+    const getPlays = allPlayCountZero ? safePlays : (entry => entry?.playCount ?? 0);
+
+    return weekData
+        .map(entry => ({
+            name: entry?.song?.name ?? '',
+            artists: (entry?.song?.ar ?? []).map(artist => artist?.name).filter(Boolean).join(' / '),
+            plays: getPlays(entry),
+        }))
+        .sort((a, b) => b.plays - a.plays)
+        .slice(0, n);
+}
+
+// ─── Duration Snapshot ──────────────────────────────────────────────
+function loadDurationSnapshot(snapshotPath) {
+    snapshotPath = snapshotPath || path.resolve(__dirname, 'duration-snapshot.json');
+    try {
+        const raw = fs.readFileSync(snapshotPath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            return parsed;
+        }
+        return {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveDurationSnapshot(snapshotPath, snapshot) {
+    snapshotPath = snapshotPath || path.resolve(__dirname, 'duration-snapshot.json');
+    fs.writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 2), 'utf8');
+}
+
+function updateDurationSnapshot(snapshot, listenSongs) {
+    const todayISO = new Date().toISOString().slice(0, 10);
+    snapshot[todayISO] = listenSongs;
+    return snapshot;
+}
+
+function deriveDailyDurations(snapshot, avgMinPerSong) {
+    if (avgMinPerSong === undefined || avgMinPerSong === null) {
+        avgMinPerSong = 3.5;
+    }
+
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const today = new Date();
+    const dow = today.getDay(); // 0=Sun, 1=Mon...6=Sat
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((dow + 6) % 7));
+
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const dateStr = d.toISOString().slice(0, 10);
+
+        const prevD = new Date(d);
+        prevD.setDate(d.getDate() - 1);
+        const prevDateStr = prevD.toISOString().slice(0, 10);
+
+        let estimatedMinutes = null;
+        if (snapshot[dateStr] !== undefined && snapshot[prevDateStr] !== undefined) {
+            const delta = snapshot[dateStr] - snapshot[prevDateStr];
+            if (delta >= 0) {
+                estimatedMinutes = Math.round(delta * avgMinPerSong * 10) / 10;
+            }
+        }
+
+        result.push({
+            date: dateStr,
+            day: dayNames[i],
+            estimatedMinutes: estimatedMinutes,
+        });
+    }
+
+    return result;
+}
+
 // ─── Data Fetching Layer ────────────────────────────────────────────
 async function fetchData(cookie, userId) {
     const account = await user_account({ cookie });
@@ -43,10 +213,11 @@ async function fetchData(cookie, userId) {
     }).catch(error => console.error(`无法获取用户播放记录 \n${error}`));
 
     const content = record.body;
-    const songId = content.weekData[0].song.id + '';
-    const songName = content.weekData[0].song.name;
-    const songAuthorArray = content.weekData[0].song.ar;
-    const playCount = content.weekData[0].playCount;
+    const weekData = safeWeekData(content);
+    const songId = weekData[0].song.id + '';
+    const songName = weekData[0].song.name;
+    const songAuthorArray = weekData[0].song.ar;
+    const playCount = weekData[0].playCount;
 
     const songAuthors = songAuthorArray.map(i => i.name).join(' / ');
 
@@ -59,6 +230,30 @@ async function fetchData(cookie, userId) {
 
     console.log(`歌曲名：${songName}\n歌曲作者：${songAuthors}\n歌曲封面：${songCover}\n播放次数：${playCount}`);
 
+    let dailyDurations = [
+        { date: null, day: 'Mon', estimatedMinutes: null },
+        { date: null, day: 'Tue', estimatedMinutes: null },
+        { date: null, day: 'Wed', estimatedMinutes: null },
+        { date: null, day: 'Thu', estimatedMinutes: null },
+        { date: null, day: 'Fri', estimatedMinutes: null },
+        { date: null, day: 'Sat', estimatedMinutes: null },
+        { date: null, day: 'Sun', estimatedMinutes: null },
+    ];
+
+    const snapshotPath = path.resolve(__dirname, 'duration-snapshot.json');
+    try {
+        const detailResult = await user_detail({ cookie, uid: userId });
+        const listenSongs = detailResult.body.profile.listenSongs;
+        console.log(`累计听歌：${listenSongs}`);
+
+        let snapshot = loadDurationSnapshot(snapshotPath);
+        snapshot = updateDurationSnapshot(snapshot, listenSongs);
+        saveDurationSnapshot(snapshotPath, snapshot);
+        dailyDurations = deriveDailyDurations(snapshot);
+    } catch (err) {
+        console.error(`获取用户详情或更新快照失败：${err}`);
+    }
+
     return {
         avatarUrl,
         nickname,
@@ -66,6 +261,8 @@ async function fetchData(cookie, userId) {
         songAuthors,
         songCover,
         playCount,
+        weekData,
+        dailyDurations,
     };
 }
 

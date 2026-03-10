@@ -571,6 +571,233 @@ async function renderTopArtists(data) {
     return { filename: "top-artists.svg", svgBase64: svgContent };
 }
 
+async function renderTopTracks(data) {
+    const tracks = deriveTopTracks(data.weekData, 5);
+    var svgContent = "";
+    try {
+        const rows = tracks.length > 0 ? tracks.map((t, i) => `
+            <div class="row">
+                <div class="rank">${i + 1}</div>
+                <div class="info">
+                    <div class="title">${t.name}</div>
+                    <div class="sub">${t.artists}</div>
+                </div>
+                <div class="plays">${t.plays}</div>
+            </div>`).join('') : `<div class="empty">暂无数据 / No data</div>`;
+        svgContent = Buffer.from(`<svg width="${STYLE.width}" height="330" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="330">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: ${STYLE.fontStack} !important;
+                margin: 0;
+                padding: 0;
+            }
+            .card {
+                background: white;
+                border-radius: ${STYLE.borderRadius};
+                box-shadow: ${STYLE.shadow};
+                overflow: hidden;
+                padding: 20px;
+                height: 320px;
+                display: flex;
+                flex-direction: column;
+            }
+            .header {
+                margin-bottom: 15px;
+            }
+            .title-header {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+            }
+            .subtitle {
+                font-size: 12px;
+                color: #888;
+                margin-top: 2px;
+            }
+            .row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+            .row:last-child {
+                margin-bottom: 0;
+            }
+            .rank {
+                background: ${STYLE.accent};
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                width: 24px;
+                height: 24px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+                flex-shrink: 0;
+            }
+            .info {
+                flex-grow: 1;
+                overflow: hidden;
+            }
+            .title {
+                font-size: 14px;
+                color: #333;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .sub {
+                font-size: 12px;
+                color: #888;
+                margin-top: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .plays {
+                font-size: 12px;
+                color: #888;
+                margin-left: 10px;
+                flex-shrink: 0;
+                background: #f0f0f0;
+                padding: 2px 6px;
+                border-radius: 10px;
+            }
+            .empty {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #888;
+            }
+        </style>
+            <div class="card">
+                <div class="header">
+                    <div class="title-header">本周 Top 歌曲</div>
+                    <div class="subtitle">Weekly Top Tracks</div>
+                </div>
+                <div class="list">
+                    ${rows}
+                </div>
+            </div>
+        </div>
+    </foreignObject>
+</svg>`).toString("base64");
+    } catch (err) { console.error(`top-tracks SVG error: ${err}`); }
+    return { filename: "top-tracks.svg", svgBase64: svgContent };
+}
+
+async function renderWeeklyOverview(data) {
+    var svgContent = "";
+    try {
+        const stats = deriveWeeklyOverview(data.weekData);
+        svgContent = Buffer.from(
+            `<svg width="${STYLE.width}" height="260" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="260">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 5px;">
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: ${STYLE.fontStack} !important;
+                margin: 0;
+                padding: 0;
+            }
+            .card {
+                background: white;
+                border-radius: ${STYLE.borderRadius};
+                box-shadow: ${STYLE.shadow};
+                width: 300px;
+                height: 250px;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .header {
+                padding: 15px;
+                border-bottom: 1px solid #eee;
+                text-align: center;
+            }
+            .title {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+            }
+            .subtitle {
+                font-size: 12px;
+                color: #999;
+                margin-top: 2px;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                flex: 1;
+            }
+            .cell {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                border-right: 1px solid #f5f5f5;
+                border-bottom: 1px solid #f5f5f5;
+            }
+            .cell:nth-child(2n) {
+                border-right: none;
+            }
+            .cell:nth-child(n+3) {
+                border-bottom: none;
+            }
+            .value {
+                font-size: 28px;
+                font-weight: bold;
+                color: ${STYLE.accent};
+            }
+            .label {
+                font-size: 11px;
+                color: #666;
+                margin-top: 4px;
+            }
+        </style>
+            <div class="card">
+                <div class="header">
+                    <div class="title">本周概览</div>
+                    <div class="subtitle">Weekly Overview</div>
+                </div>
+                <div class="grid">
+                    <div class="cell">
+                        <div class="value">\${stats.totalPlays}</div>
+                        <div class="label">总播放 / Total Plays</div>
+                    </div>
+                    <div class="cell">
+                        <div class="value">\${stats.uniqueSongs}</div>
+                        <div class="label">不同歌曲 / Unique Songs</div>
+                    </div>
+                    <div class="cell">
+                        <div class="value">\${stats.uniqueArtists}</div>
+                        <div class="label">不同艺术家 / Artists</div>
+                    </div>
+                    <div class="cell">
+                        <div class="value">\${stats.repeatIntensity === 0 ? '0' : stats.repeatIntensity}%</div>
+                        <div class="label">重复强度 / Repeat %</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </foreignObject>
+</svg>`
+        ).toString("base64");
+    } catch (err) {
+        console.error(\`weekly-overview SVG error: \${err}\`);
+    }
+    return { filename: "weekly-overview.svg", svgBase64: svgContent };
+}
+
 async function generateAllCards(data) {
     const outputs = [];
 
@@ -580,6 +807,8 @@ async function generateAllCards(data) {
 
     // Future renderers go here:
     outputs.push(await renderTopArtists(data));
+    outputs.push(await renderTopTracks(data));
+    outputs.push(await renderWeeklyOverview(data));
     // outputs.push(await renderTopList(data));
     // outputs.push(await renderStats(data));
 

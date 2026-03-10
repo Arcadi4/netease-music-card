@@ -82,7 +82,6 @@
                 vertical-align: middle;
                 color: #BA0400;
                 font-size: 16px;
-                margin-left: 10px;
             }
 
             .song {

@@ -865,8 +865,8 @@ async function renderWeeklyOverview(data) {
     try {
         const stats = deriveWeeklyOverview(data.weekData);
         svgContent = Buffer.from(
-            `<svg width="${STYLE.width}" height="260" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="${STYLE.width}" height="260">
+            `<svg width="${STYLE.width}" height="${WEEKLY_OVERVIEW_HEIGHT.svgHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="${WEEKLY_OVERVIEW_HEIGHT.foreignObjectHeight}">
         <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 5px;">
         <style>
             * {
@@ -880,7 +880,7 @@ async function renderWeeklyOverview(data) {
                 border-radius: ${STYLE.borderRadius};
                 box-shadow: ${STYLE.shadow};
                 width: 300px;
-                height: max-content;
+                height: ${WEEKLY_OVERVIEW_HEIGHT.cardHeight}px;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -913,6 +913,8 @@ async function renderWeeklyOverview(data) {
                 align-items: center;
                 border-right: 1px solid #f5f5f5;
                 border-bottom: 1px solid #f5f5f5;
+                min-height: 60px;
+                padding: 12px 8px;
             }
             .cell:nth-child(2n) {
                 border-right: none;

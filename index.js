@@ -771,19 +771,19 @@ async function renderWeeklyOverview(data) {
                 </div>
                 <div class="grid">
                     <div class="cell">
-                        <div class="value">\${stats.totalPlays}</div>
+                        <div class="value">${stats.totalPlays}</div>
                         <div class="label">总播放 / Total Plays</div>
                     </div>
                     <div class="cell">
-                        <div class="value">\${stats.uniqueSongs}</div>
+                        <div class="value">${stats.uniqueSongs}</div>
                         <div class="label">不同歌曲 / Unique Songs</div>
                     </div>
                     <div class="cell">
-                        <div class="value">\${stats.uniqueArtists}</div>
+                        <div class="value">${stats.uniqueArtists}</div>
                         <div class="label">不同艺术家 / Artists</div>
                     </div>
                     <div class="cell">
-                        <div class="value">\${stats.repeatIntensity === 0 ? '0' : stats.repeatIntensity}%</div>
+                        <div class="value">${stats.repeatIntensity === 0 ? '0' : stats.repeatIntensity}%</div>
                         <div class="label">重复强度 / Repeat %</div>
                     </div>
                 </div>
@@ -793,7 +793,7 @@ async function renderWeeklyOverview(data) {
 </svg>`
         ).toString("base64");
     } catch (err) {
-        console.error(\`weekly-overview SVG error: \${err}\`);
+        console.error(`weekly-overview SVG error: ${err}`);
     }
     return { filename: "weekly-overview.svg", svgBase64: svgContent };
 }

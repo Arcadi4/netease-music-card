@@ -1,0 +1,33 @@
+Fixture-based E2E Verification — Task 10
+Date: 2026-03-10T20:39:51.930Z
+Node: v25.8.0
+
+Total checks: 27 passed, 0 failed
+
+PASS: deriveTopArtists: returns 5 artists
+PASS: deriveTopArtists: #1 is SICK HACK (72 plays)
+PASS: deriveWeeklyOverview: totalPlays=185
+PASS: deriveWeeklyOverview: uniqueSongs=6
+PASS: deriveWeeklyOverview: uniqueArtists=6
+PASS: deriveTopTracks: returns 5 tracks
+PASS: deriveTopTracks: #1 is 孤独摇滚 (42 plays)
+PASS: deriveTopArtists(zero-play): falls back to score, #1 is SICK HACK
+PASS: deriveTopTracks(zero-play): #1 is 孤独摇滚 (score=85)
+PASS: deriveTopArtists(empty): returns []
+PASS: deriveWeeklyOverview(empty): totalPlays=0
+PASS: renderTopArtists(normal) (4396 bytes)
+PASS: renderTopTracks(normal) (4861 bytes)
+PASS: renderWeeklyOverview(normal) (3235 bytes)
+PASS: renderWeeklyDuration(normal) (5278 bytes)
+PASS: renderTopArtists(empty) (2959 bytes, empty-state)
+PASS: renderTopTracks(empty) (3340 bytes, empty-state)
+PASS: renderWeeklyOverview(empty) (3230 bytes)
+PASS: renderWeeklyOverview(empty): shows 0 totalPlays
+PASS: renderWeeklyDuration(empty) (3086 bytes, empty-state)
+PASS: renderTopArtists(zero-play) (4397 bytes)
+PASS: renderTopArtists(zero-play): contains SICK HACK
+PASS: renderTopTracks(zero-play) (4865 bytes)
+PASS: renderTopArtists filename
+PASS: renderTopTracks filename
+PASS: renderWeeklyOverview filename
+PASS: renderWeeklyDuration filename

@@ -164,9 +164,27 @@ function saveDurationSnapshot(snapshotPath, snapshot) {
 }
 
 function updateDurationSnapshot(snapshot, listenSongs) {
+    if (!Number.isFinite(listenSongs) || listenSongs < 0) {
+        throw new Error('[duration] Invalid listenSongs value: ' + listenSongs);
+    }
     const todayISO = new Date().toISOString().slice(0, 10);
     snapshot[todayISO] = listenSongs;
     return snapshot;
+}
+
+function extractListenSongs(detailResult) {
+    // Diagnostic: log available keys to help debug API response structure
+    console.log(`[debug] Available keys in detailResult.body: ${JSON.stringify(Object.keys(detailResult?.body || {}))}`);
+    
+    // Try top-level listenSongs first, then fall back to profile.listenSongs
+    let listenSongs = detailResult?.body?.listenSongs ?? detailResult?.body?.profile?.listenSongs;
+    
+    // Validate that the value is a finite non-negative number
+    if (!Number.isFinite(listenSongs) || listenSongs < 0) {
+        throw new Error(`[duration] Invalid listenSongs value: ${listenSongs}`);
+    }
+    
+    return listenSongs;
 }
 
 function deriveDailyDurations(snapshot, avgMinPerSong) {
@@ -274,7 +292,7 @@ async function fetchData(cookie, userId) {
     const snapshotPath = path.resolve(__dirname, 'duration-snapshot.json');
     try {
         const detailResult = await user_detail({ cookie, uid: userId });
-        const listenSongs = detailResult.body.profile.listenSongs;
+        const listenSongs = extractListenSongs(detailResult);
         console.log(`[info] total listen count: ${listenSongs}`);
 
         let snapshot = loadDurationSnapshot(snapshotPath);

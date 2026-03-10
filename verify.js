@@ -107,22 +107,85 @@ function deriveWeeklyOverview(weekData) {
 }
 
 function deriveTopTracks(weekData, n = 5) {
-    if (!Array.isArray(weekData) || weekData.length === 0) {
-        return [];
-    }
+     if (!Array.isArray(weekData) || weekData.length === 0) {
+         return [];
+     }
+ 
+     const allPlayCountZero = weekData.every(entry => (entry?.playCount ?? 0) === 0);
+     const getPlays = allPlayCountZero ? safePlays : (entry => entry?.playCount ?? 0);
+ 
+     return weekData
+         .map(entry => ({
+             name: entry?.song?.name ?? '',
+             artists: (entry?.song?.ar ?? []).map(artist => artist?.name).filter(Boolean).join(' / '),
+             plays: getPlays(entry),
+         }))
+         .sort((a, b) => b.plays - a.plays)
+         .slice(0, n);
+ }
 
-    const allPlayCountZero = weekData.every(entry => (entry?.playCount ?? 0) === 0);
-    const getPlays = allPlayCountZero ? safePlays : (entry => entry?.playCount ?? 0);
+function updateDurationSnapshot(snapshot, listenSongs) {
+     if (!Number.isFinite(listenSongs) || listenSongs < 0) {
+         throw new Error('[duration] Invalid listenSongs value: ' + listenSongs);
+     }
+     const todayISO = new Date().toISOString().slice(0, 10);
+     snapshot[todayISO] = listenSongs;
+     return snapshot;
+ }
 
-    return weekData
-        .map(entry => ({
-            name: entry?.song?.name ?? '',
-            artists: (entry?.song?.ar ?? []).map(artist => artist?.name).filter(Boolean).join(' / '),
-            plays: getPlays(entry),
-        }))
-        .sort((a, b) => b.plays - a.plays)
-        .slice(0, n);
-}
+function extractListenSongs(detailResult) {
+     // Diagnostic: log available keys to help debug API response structure
+     console.log(`[debug] Available keys in detailResult.body: ${JSON.stringify(Object.keys(detailResult?.body || {}))}`);
+     
+     // Try top-level listenSongs first, then fall back to profile.listenSongs
+     let listenSongs = detailResult?.body?.listenSongs ?? detailResult?.body?.profile?.listenSongs;
+     
+     // Validate that the value is a finite non-negative number
+     if (!Number.isFinite(listenSongs) || listenSongs < 0) {
+         throw new Error(`[duration] Invalid listenSongs value: ${listenSongs}`);
+     }
+     
+     return listenSongs;
+ }
+
+function deriveDailyDurations(snapshot, avgMinPerSong) {
+     if (avgMinPerSong === undefined || avgMinPerSong === null) {
+         avgMinPerSong = 3.5;
+     }
+
+     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+     const today = new Date();
+     const dow = today.getDay(); // 0=Sun, 1=Mon...6=Sat
+     const monday = new Date(today);
+     monday.setDate(today.getDate() - ((dow + 6) % 7));
+
+     const result = [];
+     for (let i = 0; i < 7; i++) {
+         const d = new Date(monday);
+         d.setDate(monday.getDate() + i);
+         const dateStr = d.toISOString().slice(0, 10);
+
+         const prevD = new Date(d);
+         prevD.setDate(d.getDate() - 1);
+         const prevDateStr = prevD.toISOString().slice(0, 10);
+
+         let estimatedMinutes = null;
+         if (snapshot[dateStr] !== undefined && snapshot[prevDateStr] !== undefined) {
+             const delta = snapshot[dateStr] - snapshot[prevDateStr];
+             if (delta >= 0) {
+                 estimatedMinutes = Math.round(delta * avgMinPerSong * 10) / 10;
+             }
+         }
+
+         result.push({
+             date: dateStr,
+             day: dayNames[i],
+             estimatedMinutes: estimatedMinutes,
+         });
+     }
+
+     return result;
+ }
 
 // ─── Renderer Functions (copied from index.js) ──────────────────────
 
@@ -750,6 +813,51 @@ function assertDerivation(label, actual, check) {
 
     const emptyOverview = deriveWeeklyOverview([]);
     assertDerivation('deriveWeeklyOverview(empty): totalPlays=0', emptyOverview, o => o.totalPlays === 0);
+
+    // ── Snapshot checks ──────────────────────────────────────────────
+    console.log('\n--- Snapshot checks ---');
+
+    // Test 1: extractListenSongs happy path — top-level body.listenSongs
+    const result1 = extractListenSongs({ body: { listenSongs: 100 } });
+    assertDerivation('extractListenSongs: top-level body.listenSongs', result1, v => v === 100);
+
+    // Test 2: extractListenSongs fallback — body.profile.listenSongs
+    const result2 = extractListenSongs({ body: { profile: { listenSongs: 50 } } });
+    assertDerivation('extractListenSongs: fallback profile.listenSongs', result2, v => v === 50);
+
+    // Test 3: extractListenSongs invalid — undefined throws
+    let threw3 = false;
+    try { extractListenSongs({ body: {} }); } catch (e) { threw3 = e.message.includes('[duration]'); }
+    assertDerivation('extractListenSongs: undefined throws [duration] error', threw3, v => v === true);
+
+    // Test 4: extractListenSongs invalid — negative throws
+    let threw4 = false;
+    try { extractListenSongs({ body: { listenSongs: -1 } }); } catch (e) { threw4 = e.message.includes('[duration]'); }
+    assertDerivation('extractListenSongs: negative throws [duration] error', threw4, v => v === true);
+
+    // Test 5: updateDurationSnapshot valid — writes correct key
+    const snap5 = {};
+    const today5 = new Date().toISOString().slice(0, 10);
+    updateDurationSnapshot(snap5, 200);
+    assertDerivation('updateDurationSnapshot: writes today key with value', snap5, s => s[today5] === 200);
+
+    // Test 6: updateDurationSnapshot invalid — null throws
+    let threw6 = false;
+    try { updateDurationSnapshot({}, null); } catch (e) { threw6 = true; }
+    assertDerivation('updateDurationSnapshot: null throws', threw6, v => v === true);
+
+    // Test 7: updateDurationSnapshot invalid — string throws
+    let threw7 = false;
+    try { updateDurationSnapshot({}, 'abc'); } catch (e) { threw7 = true; }
+    assertDerivation('updateDurationSnapshot: string throws', threw7, v => v === true);
+
+    // Test 8: deriveDailyDurations — two-day delta produces estimatedMinutes
+    const today8 = new Date().toISOString().slice(0, 10);
+    const yesterday8 = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const snap8 = { [yesterday8]: 100, [today8]: 150 };
+    const durations8 = deriveDailyDurations(snap8, 3.5);
+    const todayEntry = durations8.find(d => d.date === today8);
+    assertDerivation('deriveDailyDurations: two-day delta gives estimatedMinutes', todayEntry, d => typeof d?.estimatedMinutes === 'number' && d.estimatedMinutes > 0);
 
     // ── 2. Renderer SVG checks (normal data) ──────────────────────
     console.log('\n--- Renderer checks (normal data) ---');

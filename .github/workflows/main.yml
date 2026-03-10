@@ -1,9 +1,9 @@
 name: NeteaseMusic
 on:
   push:
-  workflow_dispatch:
     branches:
       - main
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
@@ -22,3 +22,4 @@ jobs:
           USER_TOKEN: ${{ secrets.NETEASE_USER_TOKEN }}
           REPO: "netease-music-card"
           AUTHOR: "Arcadi4"
+          OUTPUT_BRANCH: "svg"

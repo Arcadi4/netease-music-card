@@ -16,7 +16,10 @@ const {
     GH_TOKEN,
     AUTHOR,
     REPO,
+    OUTPUT_BRANCH,
 } = process.env;
+
+const TARGET_BRANCH = OUTPUT_BRANCH || 'main';
 
 // ─── Preflight Validation ──────────────────────────────────────────
 const REQUIRED_ENVS = ['USER_ID', 'USER_TOKEN', 'GH_TOKEN', 'AUTHOR', 'REPO'];
@@ -514,7 +517,7 @@ async function renderTopArtists(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: full;
+                height: auto;
                 display: flex;
                 flex-direction: column;
             }
@@ -628,7 +631,7 @@ async function renderTopTracks(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: full;
+                height: auto;
                 display: flex;
                 flex-direction: column;
             }
@@ -741,7 +744,7 @@ async function renderWeeklyOverview(data) {
                 border-radius: ${STYLE.borderRadius};
                 box-shadow: ${STYLE.shadow};
                 width: 300px;
-                height: full;
+                height: auto;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -884,7 +887,7 @@ async function renderWeeklyDuration(data) {
                 box-shadow: ${STYLE.shadow};
                 overflow: hidden;
                 padding: 20px;
-                height: full;
+                height: auto;
                 display: flex;
                 flex-direction: column;
             }
@@ -1037,11 +1040,41 @@ async function commitAll(outputs) {
             sha: snapshotSha,
         });
 
-        const commits = await octokit.repos.listCommits({
-            owner: AUTHOR,
-            repo: REPO,
-        });
-        const lastSha = commits.data[0].sha;
+        let lastSha;
+        try {
+            const {
+                data: { object: { sha } }
+            } = await octokit.git.getRef({
+                owner: AUTHOR,
+                repo: REPO,
+                ref: `heads/${TARGET_BRANCH}`,
+            });
+            lastSha = sha;
+        } catch (err) {
+            if (err.status !== 404) {
+                throw err;
+            }
+            const {
+                data: { default_branch: defaultBranch }
+            } = await octokit.repos.get({
+                owner: AUTHOR,
+                repo: REPO,
+            });
+            const {
+                data: { object: { sha: baseSha } }
+            } = await octokit.git.getRef({
+                owner: AUTHOR,
+                repo: REPO,
+                ref: `heads/${defaultBranch}`,
+            });
+            await octokit.git.createRef({
+                owner: AUTHOR,
+                repo: REPO,
+                ref: `refs/heads/${TARGET_BRANCH}`,
+                sha: baseSha,
+            });
+            lastSha = baseSha;
+        }
         const {
             data: { sha: treeSHA }
         } = await octokit.git.createTree({
@@ -1070,7 +1103,7 @@ async function commitAll(outputs) {
         const result = await octokit.git.updateRef({
             owner: AUTHOR,
             repo: REPO,
-            ref: "heads/main",
+            ref: `heads/${TARGET_BRANCH}`,
             sha: newSHA,
         });
         console.log(`[info] Ref updated: ${result.data?.ref ?? 'unknown'} -> ${newSHA}`);

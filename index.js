@@ -16,21 +16,29 @@ const {
     REPO,
 } = process.env;
 
-(async () => {
-    const account = await user_account({
-        cookie: `MUSIC_U=${USER_TOKEN}`,
-    });
+// ─── Shared Style Tokens ────────────────────────────────────────────
+const STYLE = {
+    width: 310,
+    height: 490,
+    borderRadius: "10px",
+    shadow: "gray 0 0 10px",
+    accent: "#BA0400",
+    green: "#28C131",
+    fontStack: "'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif",
+};
+
+// ─── Data Fetching Layer ────────────────────────────────────────────
+async function fetchData(cookie, userId) {
+    const account = await user_account({ cookie });
 
     const avatarUrl = account.body.profile.avatarUrl + "?param=128y128"; // 压缩
     console.log(`个人头像: ${avatarUrl}`);
 
-    /*
-      获取歌单记录
-    */
+    const nickname = account.body.profile.nickname;
 
     const record = await user_record({
-        cookie: `MUSIC_U=${USER_TOKEN}`,
-        uid: USER_ID,
+        cookie,
+        uid: userId,
         type: 1,
     }).catch(error => console.error(`无法获取用户播放记录 \n${error}`));
 
@@ -42,27 +50,41 @@ const {
 
     const songAuthors = songAuthorArray.map(i => i.name).join(' / ');
 
-    const songDetail = await song_detail({
-        cookie: `MUSIC_U=${USER_TOKEN}`,
+    const songDetailResult = await song_detail({
+        cookie,
         ids: songId,
     }).catch(error => console.error(`无法获取歌曲信息 \n${error}`));
 
-    const songCover = songDetail.body.songs[0].al.picUrl + "?param=300y300";
+    const songCover = songDetailResult.body.songs[0].al.picUrl + "?param=300y300";
 
     console.log(`歌曲名：${songName}\n歌曲作者：${songAuthors}\n歌曲封面：${songCover}\n播放次数：${playCount}`);
+
+    return {
+        avatarUrl,
+        nickname,
+        songName,
+        songAuthors,
+        songCover,
+        playCount,
+    };
+}
+
+// ─── Card Renderer (card.svg) ───────────────────────────────────────
+async function renderCard(data) {
+    const { avatarUrl, nickname, songName, songAuthors, songCover, playCount } = data;
 
     var svgContent = "";
     try {
         svgContent = Buffer.from(
-            `<svg width="310" height="490" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="310" height="490">
+            `<svg width="${STYLE.width}" height="${STYLE.height}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="${STYLE.width}" height="${STYLE.height}">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
             * {
                 box-sizing: border-box;
                 color:black;
                 font-size: 0;
-                font-family: 'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif !important;
+                font-family: ${STYLE.fontStack} !important;
             }
 
             html, body {
@@ -87,9 +109,9 @@ const {
             .card {
                 display: inline-block;
                 background: white;
-                border-radius: 10px;
+                border-radius: ${STYLE.borderRadius};
                 text-align: center;
-                box-shadow: gray 0 0 10px;
+                box-shadow: ${STYLE.shadow};
                 overflow: hidden;
             }
 
@@ -113,7 +135,7 @@ const {
             }
 
             .button {
-                background: #28C131;
+                background: ${STYLE.green};
                 width: 16px;
                 height: 16px;
                 border-radius: 100%;
@@ -136,7 +158,7 @@ const {
 
             .intro {
                 vertical-align: middle;
-                color: #BA0400;
+                color: ${STYLE.accent};
                 font-size: 16px;
                 margin-left: 10px;
             }
@@ -199,12 +221,12 @@ const {
             <div class="card">
                 <div class="user">
                     <img class="avatar" src="data:image/jpg;base64,${await getBase64(avatarUrl)}"/>
-                    <a class="username">4rcadia</a>
+                    <a class="username">${nickname}</a>
                     <a class="button"></a>
                     <div class="clear"></div>
                 </div>
                 <div class="hello">
-                    <img class="neteasecloud" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABoVBMVEUAAADdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABviJz7pXW7nS17eBiDugo/////62t7hHDTgEyzufYvdARzlOk/50tf+9vfteojpWGr97vDgGTH3xszjKkHviZXteIb86OrrbHzra3v509jqX3D0rbbfDijiIjnwkp7ynqjqYnP98vPzpa/wjpr++vv87O7pWmv74OPeCiT0q7T3w8n3wsj97/HraXndAx786uzrZ3foU2X++/vpV2nnSVz85+rfECn0rrf//PzjMEbjLEL2u8LeCSP+9/jjL0X4ytD1tb3nTF/74uXkNkv3wMfmRFj//f3pW2z619v86evlO1D0r7fscH/+9PXmRVnnSFv98PL1sbn0qbLgFS786+363eHoVmjhGzPkOE35z9Tyn6n85un62Nz97e/nSl350dbqXm/73+LraHjjK0Hufoz4yc/eBR/51dnnTWDjLUP98fLeCyXwkJz4yM7tdYTlOU7oUmT0qrP1srrranrkM0n4ztP+9fb75Of1tLzfDCZ1sXtGAAAAEHRSTlMAE2Ok0vMup/oNl/4r2zjxygE/KQAAAAFiS0dEFnzRqBkAAAAHdElNRQflCQ0QCDMeCNJTAAABwElEQVQ4y41T9VtCUQx9lAiiTsWjiIndhdiN3d2Kjd3dHX+1F+59DzA+PD9s+9727razTZIUqNQarY5Ip9WoVdJPhOhDSUGoPuSb22AMowCEGQ3+flM4/UC4yeePiKRfEBmh/B/oj4qOMfMI8YYh8P1YAHHxPAuvwyi7LAkJVkoEkpKRwr8Yvf3J9aemATZKQTplZNpEL55u9cKfBWTnEOUizy+fnvEn+MkHCgqJioqBktJChTGVpOaWrQzlVjLbK+CBo1KOUEsabthRVU1UA9TWwVEPNIgAjaT16sYmNBO1oNVJbWjv6ERXNw/QSjqv7gEsRL3IJOrrx4B5EEM8QCdxPYwRJh0YZXIMpTSOCQv3iIBJTDE5jRkmZzFHjfNYEAE8hQuLTC5hmWhlFS6iNayLFLxIN8Cq2pjA5tY2dtisdrEnihRt7qOYyYN+RsJhD1E34BZtCqKOUHHs4SvnxNnHdAFOZaIE1WfnWHMrI8gFLmSq5WFdXqG9jZvXN8CWMixl3Bts2rd3rvuHGwfwaPaNW1mY+CcILD5b/RbGb+Ve7K9pb+8fR5/yYht+XVrfWpv+u/bBDyf46QU/3r/P/wt/IFj7qdvKMgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOS0xM1QxNjowODo1MSswMDowMKszm9EAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDktMTNUMTY6MDg6NTErMDA6MDDabiNtAAAAAElFTkSuQmCC" />
+                    <img class="neteasecloud" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABoVBMVEUAAADdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABvdABviJz7pXW7nS17eBiDugo/////62t7hHDTgEyzufYvdARzlOk/50tf+9vfteojpWGr97vDgGTH3xszjKkHviZXteIb86OrrbHzra3v509jqX3D0rbbfDijiIjnwkp7ynqjqYnP98vPzpa/wjpr++vv87O7pWmv74OPeCiT0q7T3w8n3wsj97/HraXndAx786uzrZ3foU2X++/vpV2nnSVz85+rfECn0rrf//PzjMEbjLEL2u8LeCSP+9/jjL0X4ytD1tb3nTF/74uXkNkv3wMfmRFj//f3pW2z619v86evlO1D0r7fscH/+9PXmRVnnSFv98PL1sbn0qbLgFS786+363eHoVmjhGzPkOE35z9Tyn6n85un62Nz97e/nSl350dbqXm/73+LraHjjK0Hufoz4yc/eBR/51dnnTWDjLUP98fLeCyXwkJz4yM7tdYTlOU7oUmT0qrP1srrranrkM0n4ztP+9fb75Of1tLzfDCZ1sXtGAAAAEHRSTlMAE2Ok0vMup/oNl/4r2zjxygE/KQAAAAFiS0dEFnzRqBkAAAAHdElNRQflCQ0QCDMeCNJTAAABwElEQVQ4y41T9VtCUQx9lAiiTsWjiIndhdiN3d2Kjd3dHX+1F+59DzA+PD9s+9727bazTZIUqNQarY5Ip9WoVdJPhOhDSUGoPuSb22AMowCEGQ3+flM4/UC4yeePiKRfEBmh/B/oj4qOMfMI8YYh8P1YAHHxPAuvwyi7LAkJVkoEkpKRwr8Yvf3J9aemATZKQTplZNpEL55u9cKfBWTnEOUizy+fnvEn+MkHCgqJioqBktJChTGVpOaWrQzlVjLbK+CBo1KOUEsabthRVU1UA9TWwVEPNIgAjaT16sYmNBO1oNVJbWjv6ERXNw/QSjqv7gEsRL3IJOrrx4B5EEM8QCdxPYwRJh0YZXIMpTSOCQv3iIBJTDE5jRkmZzFHjfNYEAE8hQuLTC5hmWhlFS6iNayLFLxIN8Cq2pjA5tY2dtisdrEnihRt7qOYyYN+RsJhD1E34BZtCqKOUHHs4SvnxNnHdAFOZaIE1WfnWHMrI8gFLmSq5WFdXqG9jZvXN8CWMixl3Bts2rd3rvuHGwfwaPaNW1mY+CcILD5b/RbGb+Ve7K9pb+8fR5/yYht+XVrfWpv+u/bBDyf46QU/3r/P/wt/IFj7qdvKMgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOS0xM1QxNjowODo1MSswMDowMKszm9EAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDktMTNUMTY6MDg6NTErMDA6MDDabiNtAAAAAElFTkSuQmCC" />
                     <a class="intro">这周听了多达 ${playCount} 次</a>
                 </div>
                 <p class="song">${songName}</p>
@@ -223,19 +245,48 @@ const {
         console.error(`处理 SVG 时发生了错误：${err}`);
     }
 
+    return { filename: "card.svg", svgBase64: svgContent };
+}
+
+// ─── Renderer Registry ──────────────────────────────────────────────
+async function generateAllCards(data) {
+    const outputs = [];
+
+    // card.svg — main player card
+    const card = await renderCard(data);
+    outputs.push(card);
+
+    // Future renderers go here:
+    // outputs.push(await renderTopList(data));
+    // outputs.push(await renderStats(data));
+
+    return outputs;
+}
+
+// ─── Git Commit Pipeline ────────────────────────────────────────────
+async function commitAll(outputs) {
     try {
         const octokit = new Octokit({
             auth: GH_TOKEN,
         });
 
-        const {
-            data: { sha: svgSha }
-        } = await octokit.git.createBlob({
-            owner: AUTHOR,
-            repo: REPO,
-            content: svgContent,
-            encoding: "base64"
-        });
+        const blobEntries = [];
+        for (const output of outputs) {
+            const {
+                data: { sha }
+            } = await octokit.git.createBlob({
+                owner: AUTHOR,
+                repo: REPO,
+                content: output.svgBase64,
+                encoding: "base64"
+            });
+            blobEntries.push({
+                mode: '100644',
+                path: output.filename,
+                type: "blob",
+                sha,
+            });
+        }
 
         const commits = await octokit.repos.listCommits({
             owner: AUTHOR,
@@ -247,14 +298,7 @@ const {
         } = await octokit.git.createTree({
             owner: AUTHOR,
             repo: REPO,
-            tree: [
-                {
-                    mode: '100644',
-                    path: "card.svg",
-                    type: "blob",
-                    sha: svgSha
-                }
-            ],
+            tree: blobEntries,
             base_tree: lastSha,
         });
         const {
@@ -284,6 +328,12 @@ const {
     } catch (err) {
         console.error(`上传 SVG 时发生了错误：${err}`);
     }
+}
 
+// ─── Main ───────────────────────────────────────────────────────────
+(async () => {
+    const cookie = `MUSIC_U=${USER_TOKEN}`;
+    const data = await fetchData(cookie, USER_ID);
+    const outputs = await generateAllCards(data);
+    await commitAll(outputs);
 })();
-

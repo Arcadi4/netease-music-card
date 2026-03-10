@@ -19,7 +19,7 @@ const {
 (async () => {
     const account = await user_account({
         cookie: `MUSIC_U=${USER_TOKEN}`,
-    })
+    });
 
     const avatarUrl = account.body.profile.avatarUrl + "?param=128y128"; // 压缩
     console.log(`个人头像: ${avatarUrl}`);
@@ -27,7 +27,7 @@ const {
     /*
       获取歌单记录
     */
-   
+
     const record = await user_record({
         cookie: `MUSIC_U=${USER_TOKEN}`,
         uid: USER_ID,
@@ -54,7 +54,7 @@ const {
     var svgContent = "";
     try {
         svgContent = Buffer.from(
-`<svg width="310" height="490" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            `<svg width="310" height="490" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <foreignObject width="310" height="490">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
         <style>
@@ -199,7 +199,7 @@ const {
             <div class="card">
                 <div class="user">
                     <img class="avatar" src="data:image/jpg;base64,${await getBase64(avatarUrl)}"/>
-                    <a class="username">RugerMc</a>
+                    <a class="username">4rcadia</a>
                     <a class="button"></a>
                     <div class="clear"></div>
                 </div>
@@ -219,7 +219,7 @@ const {
 </svg>
 `
         ).toString("base64");
-    } catch(err) {
+    } catch (err) {
         console.error(`处理 SVG 时发生了错误：${err}`);
     }
 
@@ -244,7 +244,7 @@ const {
         const lastSha = commits.data[0].sha;
         const {
             data: { sha: treeSHA }
-        } =  await octokit.git.createTree({
+        } = await octokit.git.createTree({
             owner: AUTHOR,
             repo: REPO,
             tree: [
@@ -259,7 +259,7 @@ const {
         });
         const {
             data: { sha: newSHA }
-        } =  await octokit.git.createCommit({
+        } = await octokit.git.createCommit({
             owner: AUTHOR,
             repo: REPO,
             author: {
@@ -272,7 +272,7 @@ const {
             },
             tree: treeSHA,
             message: 'Update SVG periodically',
-            parents: [ lastSha ],
+            parents: [lastSha],
         });
         const result = await octokit.git.updateRef({
             owner: AUTHOR,
@@ -281,7 +281,7 @@ const {
             sha: newSHA,
         });
         console.log(result);
-    } catch(err) {
+    } catch (err) {
         console.error(`上传 SVG 时发生了错误：${err}`);
     }
 

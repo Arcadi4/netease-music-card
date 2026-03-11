@@ -90,7 +90,56 @@
                     <div class="title">本周听歌时长</div>
                     <div class="subtitle">估算时长 · Estimated</div>
                 </div>
-                <div class="empty-state">暂无数据 / No data</div>
+                <div class="chart">
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Mon</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Tue</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top">28m</div>
+                    <div class="bar-wrap">
+                        <div class="bar filled" style="height: 100px;"></div>
+                    </div>
+                    <div class="bar-day">Wed</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Thu</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Fri</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Sat</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-label-top"></div>
+                    <div class="bar-wrap">
+                        <div class="bar empty" style="height: 10px;"></div>
+                    </div>
+                    <div class="bar-day">Sun</div>
+                </div></div>
             </div>
         </div>
     </foreignObject>

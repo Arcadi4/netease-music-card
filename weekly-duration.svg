@@ -108,14 +108,14 @@
                 <div class="bar-col">
                     <div class="bar-label-top">28m</div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 100px;"></div>
+                        <div class="bar filled" style="height: 50px;"></div>
                     </div>
                     <div class="bar-day">Wed</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top"></div>
+                    <div class="bar-label-top">56m</div>
                     <div class="bar-wrap">
-                        <div class="bar empty" style="height: 10px;"></div>
+                        <div class="bar filled" style="height: 100px;"></div>
                     </div>
                     <div class="bar-day">Thu</div>
                 </div>

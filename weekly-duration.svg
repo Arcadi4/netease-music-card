@@ -134,9 +134,9 @@
                     <div class="bar-day">Sat</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top"></div>
+                    <div class="bar-label-top">63m</div>
                     <div class="bar-wrap">
-                        <div class="bar empty" style="height: 10px;"></div>
+                        <div class="bar filled" style="height: 31.57894736842105px;"></div>
                     </div>
                     <div class="bar-day">Sun</div>
                 </div></div>

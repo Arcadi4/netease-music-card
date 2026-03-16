@@ -46,11 +46,6 @@ func DeriveDailyDurations(snap snapshot.DurationSnapshot, avgMinPerSong float64)
 				typ := "delta"
 				estimateType = &typ
 			}
-		} else if dateExists && !prevExists {
-			val := math.Round(float64(dateVal)*avgMinPerSong*10) / 10
-			estimatedMinutes = &val
-			typ := "baseline"
-			estimateType = &typ
 		}
 
 		result[i] = DailyDuration{

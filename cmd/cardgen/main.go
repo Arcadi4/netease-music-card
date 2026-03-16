@@ -56,8 +56,8 @@ func main() {
 		fmt.Println("  USER_ID      - Netease user ID")
 		fmt.Println("  USER_TOKEN   - Netease user token")
 		fmt.Println("  GH_TOKEN     - GitHub token")
-		fmt.Println("  REPO         - GitHub repository")
 		fmt.Println("\nOptional environment variables:")
+		fmt.Println("  GITHUB_REPOSITORY - GitHub repository in owner/repo format")
 		fmt.Println("  OUTPUT_BRANCH - Target branch (default: main)")
 		os.Exit(0)
 	}
@@ -507,7 +507,7 @@ func runPublishSelfCheck() error {
 		return fmt.Errorf("GH_TOKEN is empty")
 	}
 	if cfg.Repo == "" {
-		return fmt.Errorf("REPO is empty")
+		return fmt.Errorf("repository detection returned empty value")
 	}
 	if cfg.OutputBranch == "" {
 		return fmt.Errorf("OUTPUT_BRANCH is empty")

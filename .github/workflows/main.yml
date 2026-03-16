@@ -27,5 +27,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USER_ID: ${{ vars.NETEASE_USER_ID }}
           USER_TOKEN: ${{ secrets.NETEASE_USER_TOKEN }}
-          REPO: "netease-music-card"
           OUTPUT_BRANCH: "svg"

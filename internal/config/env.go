@@ -2,7 +2,9 @@ package config
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -19,7 +21,6 @@ func LoadConfig() (*Config, error) {
 		"USER_ID":    os.Getenv("USER_ID"),
 		"USER_TOKEN": os.Getenv("USER_TOKEN"),
 		"GH_TOKEN":   os.Getenv("GH_TOKEN"),
-		"REPO":       os.Getenv("REPO"),
 	}
 
 	var missing []string
@@ -33,6 +34,11 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("Missing required environment variables: %s", strings.Join(missing, ", "))
 	}
 
+	repo, err := detectRepo()
+	if err != nil {
+		return nil, err
+	}
+
 	outputBranch := os.Getenv("OUTPUT_BRANCH")
 	if outputBranch == "" {
 		outputBranch = "main"
@@ -42,7 +48,69 @@ func LoadConfig() (*Config, error) {
 		UserID:       required["USER_ID"],
 		UserToken:    required["USER_TOKEN"],
 		GHToken:      required["GH_TOKEN"],
-		Repo:         required["REPO"],
+		Repo:         repo,
 		OutputBranch: outputBranch,
 	}, nil
+}
+
+func detectRepo() (string, error) {
+	if repo := strings.TrimSpace(os.Getenv("GITHUB_REPOSITORY")); isOwnerRepo(repo) {
+		return repo, nil
+	}
+
+	remote, err := gitOriginURL()
+	if err != nil {
+		return "", fmt.Errorf("failed to detect repository automatically: %w", err)
+	}
+
+	repo := parseOwnerRepo(remote)
+	if !isOwnerRepo(repo) {
+		return "", fmt.Errorf("failed to parse owner/repo from remote URL: %s", remote)
+	}
+
+	return repo, nil
+}
+
+func gitOriginURL() (string, error) {
+	out, err := exec.Command("git", "config", "--get", "remote.origin.url").Output()
+	if err != nil {
+		return "", fmt.Errorf("git remote.origin.url not available")
+	}
+	remote := strings.TrimSpace(string(out))
+	if remote == "" {
+		return "", fmt.Errorf("git remote.origin.url is empty")
+	}
+	return remote, nil
+}
+
+func parseOwnerRepo(remote string) string {
+	trimmed := strings.TrimSpace(strings.TrimSuffix(remote, ".git"))
+
+	if strings.Contains(trimmed, "://") {
+		parsed, err := url.Parse(trimmed)
+		if err == nil {
+			trimmed = strings.TrimPrefix(parsed.Path, "/")
+		}
+	} else if strings.Contains(trimmed, ":") {
+		parts := strings.SplitN(trimmed, ":", 2)
+		trimmed = parts[1]
+	}
+
+	segments := strings.Split(strings.TrimPrefix(trimmed, "/"), "/")
+	if len(segments) < 2 {
+		return ""
+	}
+
+	owner := segments[len(segments)-2]
+	repo := segments[len(segments)-1]
+	if owner == "" || repo == "" {
+		return ""
+	}
+
+	return owner + "/" + repo
+}
+
+func isOwnerRepo(repo string) bool {
+	parts := strings.Split(repo, "/")
+	return len(parts) == 2 && parts[0] != "" && parts[1] != ""
 }

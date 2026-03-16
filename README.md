@@ -23,7 +23,7 @@
  * 将第一步获取到的值粘贴进去
 
 ### 3. 修改 `main.yml`
-将 [main.yml](https://github.com/Nthily/netease-music-card/blob/main/.github/workflows/main.yml#L24) 中的 `USER_ID`、`USER_TOKEN` 和 `REPO` 配置为你自己的值
+将 [main.yml](https://github.com/Nthily/netease-music-card/blob/main/.github/workflows/main.yml#L24) 中的 `USER_ID` 和 `USER_TOKEN` 配置为你自己的值（仓库会自动识别）
 
 ### 4. 引用图片
 
@@ -45,7 +45,8 @@
 * `USER_ID` - 网易云音乐用户 ID
 * `USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
 * `GH_TOKEN` - GitHub Personal Access Token
-* `REPO` - 仓库名称
+
+仓库会优先从 `GITHUB_REPOSITORY` 自动识别；本地运行会回退到 `git remote origin` 自动解析。
 
 运行程序：
 

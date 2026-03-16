@@ -12,11 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - name: Restore duration snapshot
-        run: |
-          git fetch origin svg
-          git checkout origin/svg -- duration-snapshot.json || true
-          test -f duration-snapshot.json || printf '{}' > duration-snapshot.json
       - name: Setup Go
         uses: actions/setup-go@v4
         with:

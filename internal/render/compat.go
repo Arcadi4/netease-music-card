@@ -44,13 +44,3 @@ func ValidateWeeklyOverviewMarkers(svg []byte) error {
 	}
 	return nil
 }
-
-func ValidateWeeklyDurationMarkers(svg []byte) error {
-	required := []string{"<foreignObject", "<style>", "本周听歌时长"}
-	for _, marker := range required {
-		if !bytes.Contains(svg, []byte(marker)) {
-			return fmt.Errorf("missing required marker: %s", marker)
-		}
-	}
-	return nil
-}

@@ -6,15 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
 type GitHubPublisher struct {
-	token        string
-	owner        string
-	repo         string
-	branch       string
-	commitAuthor string
+	token  string
+	owner  string
+	repo   string
+	branch string
 }
 
 type FileToCommit struct {
@@ -22,13 +20,12 @@ type FileToCommit struct {
 	Content []byte
 }
 
-func NewGitHubPublisher(token, owner, repo, branch, commitAuthor string) *GitHubPublisher {
+func NewGitHubPublisher(token, owner, repo, branch string) *GitHubPublisher {
 	return &GitHubPublisher{
-		token:        token,
-		owner:        owner,
-		repo:         repo,
-		branch:       branch,
-		commitAuthor: commitAuthor,
+		token:  token,
+		owner:  owner,
+		repo:   repo,
+		branch: branch,
 	}
 }
 
@@ -114,14 +111,10 @@ func (p *GitHubPublisher) createTree(files []FileToCommit, baseSHA string) (stri
 }
 
 func (p *GitHubPublisher) createCommit(treeSHA, parentSHA string) (string, error) {
-	name, email := p.parseAuthor()
-	author := map[string]string{"name": name, "email": email}
-
 	payload := map[string]interface{}{
 		"message": "Update music cards and duration snapshot",
 		"tree":    treeSHA,
 		"parents": []string{parentSHA},
-		"author":  author,
 	}
 
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/git/commits", p.owner, p.repo)
@@ -148,18 +141,6 @@ func (p *GitHubPublisher) updateRef(commitSHA string) error {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/git/refs/heads/%s", p.owner, p.repo, p.branch)
 	_, err := p.request("PATCH", url, payload)
 	return err
-}
-
-func (p *GitHubPublisher) parseAuthor() (name, email string) {
-	parts := strings.SplitN(p.commitAuthor, "<", 2)
-	if len(parts) == 2 {
-		name = strings.TrimSpace(parts[0])
-		email = strings.TrimRight(strings.TrimSpace(parts[1]), ">")
-	} else {
-		name = p.commitAuthor
-		email = fmt.Sprintf("%s@users.noreply.github.com", p.commitAuthor)
-	}
-	return
 }
 
 func (p *GitHubPublisher) request(method, url string, payload interface{}) ([]byte, error) {

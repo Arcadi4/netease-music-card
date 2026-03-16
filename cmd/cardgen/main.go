@@ -56,7 +56,6 @@ func main() {
 		fmt.Println("  USER_ID      - Netease user ID")
 		fmt.Println("  USER_TOKEN   - Netease user token")
 		fmt.Println("  GH_TOKEN     - GitHub token")
-		fmt.Println("  AUTHOR       - GitHub author")
 		fmt.Println("  REPO         - GitHub repository")
 		fmt.Println("\nOptional environment variables:")
 		fmt.Println("  OUTPUT_BRANCH - Target branch (default: main)")
@@ -507,9 +506,6 @@ func runPublishSelfCheck() error {
 	if cfg.GHToken == "" {
 		return fmt.Errorf("GH_TOKEN is empty")
 	}
-	if cfg.Author == "" {
-		return fmt.Errorf("AUTHOR is empty")
-	}
 	if cfg.Repo == "" {
 		return fmt.Errorf("REPO is empty")
 	}
@@ -718,7 +714,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 			return fmt.Errorf("REPO must be in 'owner/repo' format, got: %s", cfg.Repo)
 		}
 
-		publisher := publish.NewGitHubPublisher(cfg.GHToken, parts[0], parts[1], cfg.OutputBranch, cfg.Author)
+		publisher := publish.NewGitHubPublisher(cfg.GHToken, parts[0], parts[1], cfg.OutputBranch)
 
 		files := []publish.FileToCommit{}
 

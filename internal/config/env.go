@@ -10,7 +10,6 @@ type Config struct {
 	UserID       string
 	UserToken    string
 	GHToken      string
-	Author       string
 	Repo         string
 	OutputBranch string
 }
@@ -20,7 +19,6 @@ func LoadConfig() (*Config, error) {
 		"USER_ID":    os.Getenv("USER_ID"),
 		"USER_TOKEN": os.Getenv("USER_TOKEN"),
 		"GH_TOKEN":   os.Getenv("GH_TOKEN"),
-		"AUTHOR":     os.Getenv("AUTHOR"),
 		"REPO":       os.Getenv("REPO"),
 	}
 
@@ -44,7 +42,6 @@ func LoadConfig() (*Config, error) {
 		UserID:       required["USER_ID"],
 		UserToken:    required["USER_TOKEN"],
 		GHToken:      required["GH_TOKEN"],
-		Author:       required["AUTHOR"],
 		Repo:         required["REPO"],
 		OutputBranch: outputBranch,
 	}, nil

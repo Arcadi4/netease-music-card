@@ -24,7 +24,7 @@ jobs:
       - name: Run cardgen
         run: go run ./cmd/cardgen
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USER_ID: ${{ vars.NETEASE_USER_ID }}
-          USER_TOKEN: ${{ secrets.NETEASE_USER_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NETEASE_USER_ID: ${{ vars.NETEASE_USER_ID }}
+          NETEASE_USER_TOKEN: ${{ secrets.NETEASE_USER_TOKEN }}
           OUTPUT_BRANCH: "svg"

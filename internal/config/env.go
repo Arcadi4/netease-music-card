@@ -18,9 +18,8 @@ type Config struct {
 
 func LoadConfig() (*Config, error) {
 	required := map[string]string{
-		"USER_ID":    os.Getenv("USER_ID"),
-		"USER_TOKEN": os.Getenv("USER_TOKEN"),
-		"GH_TOKEN":   os.Getenv("GH_TOKEN"),
+		"NETEASE_USER_ID":    os.Getenv("NETEASE_USER_ID"),
+		"NETEASE_USER_TOKEN": os.Getenv("NETEASE_USER_TOKEN"),
 	}
 
 	var missing []string
@@ -45,9 +44,9 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return &Config{
-		UserID:       required["USER_ID"],
-		UserToken:    required["USER_TOKEN"],
-		GHToken:      required["GH_TOKEN"],
+		UserID:       required["NETEASE_USER_ID"],
+		UserToken:    required["NETEASE_USER_TOKEN"],
+		GHToken:      os.Getenv("GITHUB_TOKEN"),
 		Repo:         repo,
 		OutputBranch: outputBranch,
 	}, nil

@@ -53,10 +53,10 @@ func main() {
 		fmt.Println("  --skip-render         Skip rendering step")
 		fmt.Println("  --skip-publish        Skip publishing step")
 		fmt.Println("\nRequired environment variables:")
-		fmt.Println("  USER_ID      - Netease user ID")
-		fmt.Println("  USER_TOKEN   - Netease user token")
-		fmt.Println("  GH_TOKEN     - GitHub token")
+		fmt.Println("  NETEASE_USER_ID    - Netease user ID")
+		fmt.Println("  NETEASE_USER_TOKEN - Netease user token")
 		fmt.Println("\nOptional environment variables:")
+		fmt.Println("  GITHUB_TOKEN      - GitHub token (empty = local mode, skip publish)")
 		fmt.Println("  GITHUB_REPOSITORY - GitHub repository in owner/repo format")
 		fmt.Println("  OUTPUT_BRANCH - Target branch (default: main)")
 		os.Exit(0)
@@ -504,7 +504,7 @@ func runPublishSelfCheck() error {
 	}
 
 	if cfg.GHToken == "" {
-		return fmt.Errorf("GH_TOKEN is empty")
+		return fmt.Errorf("GITHUB_TOKEN is empty")
 	}
 	if cfg.Repo == "" {
 		return fmt.Errorf("repository detection returned empty value")
@@ -709,58 +709,62 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 	}
 
 	if !skipPublish {
-		parts := strings.Split(cfg.Repo, "/")
-		if len(parts) != 2 {
-			return fmt.Errorf("REPO must be in 'owner/repo' format, got: %s", cfg.Repo)
-		}
-
-		publisher := publish.NewGitHubPublisher(cfg.GHToken, parts[0], parts[1], cfg.OutputBranch)
-
-		files := []publish.FileToCommit{}
-
-		if !authFailed {
-			cardSVG, err := os.ReadFile(fmt.Sprintf("%s/card.svg", outputDir))
-			if err != nil {
-				return fmt.Errorf("read card.svg: %w", err)
+		if cfg.GHToken == "" {
+			fmt.Println("GITHUB_TOKEN not set — skipping publish (local mode)")
+		} else {
+			parts := strings.Split(cfg.Repo, "/")
+			if len(parts) != 2 {
+				return fmt.Errorf("REPO must be in 'owner/repo' format, got: %s", cfg.Repo)
 			}
-			files = append(files, publish.FileToCommit{Path: "card.svg", Content: cardSVG})
-		}
 
-		topArtistsSVG, err := os.ReadFile(fmt.Sprintf("%s/top-artists.svg", outputDir))
-		if err != nil {
-			return fmt.Errorf("read top-artists.svg: %w", err)
-		}
-		files = append(files, publish.FileToCommit{Path: "top-artists.svg", Content: topArtistsSVG})
+			publisher := publish.NewGitHubPublisher(cfg.GHToken, parts[0], parts[1], cfg.OutputBranch)
 
-		topTracksSVG, err := os.ReadFile(fmt.Sprintf("%s/top-tracks.svg", outputDir))
-		if err != nil {
-			return fmt.Errorf("read top-tracks.svg: %w", err)
-		}
-		files = append(files, publish.FileToCommit{Path: "top-tracks.svg", Content: topTracksSVG})
+			files := []publish.FileToCommit{}
 
-		overviewSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir))
-		if err != nil {
-			return fmt.Errorf("read weekly-overview.svg: %w", err)
-		}
-		files = append(files, publish.FileToCommit{Path: "weekly-overview.svg", Content: overviewSVG})
+			if !authFailed {
+				cardSVG, err := os.ReadFile(fmt.Sprintf("%s/card.svg", outputDir))
+				if err != nil {
+					return fmt.Errorf("read card.svg: %w", err)
+				}
+				files = append(files, publish.FileToCommit{Path: "card.svg", Content: cardSVG})
+			}
 
-		durationSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir))
-		if err != nil {
-			return fmt.Errorf("read weekly-duration.svg: %w", err)
-		}
-		files = append(files, publish.FileToCommit{Path: "weekly-duration.svg", Content: durationSVG})
+			topArtistsSVG, err := os.ReadFile(fmt.Sprintf("%s/top-artists.svg", outputDir))
+			if err != nil {
+				return fmt.Errorf("read top-artists.svg: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "top-artists.svg", Content: topArtistsSVG})
 
-		snapshotData, err := os.ReadFile(snapshotPath)
-		if err != nil {
-			return fmt.Errorf("read snapshot: %w", err)
-		}
-		files = append(files, publish.FileToCommit{Path: "duration-snapshot.json", Content: snapshotData})
+			topTracksSVG, err := os.ReadFile(fmt.Sprintf("%s/top-tracks.svg", outputDir))
+			if err != nil {
+				return fmt.Errorf("read top-tracks.svg: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "top-tracks.svg", Content: topTracksSVG})
 
-		if err := publisher.CommitFiles(files); err != nil {
-			return fmt.Errorf("commit files: %w", err)
-		}
+			overviewSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir))
+			if err != nil {
+				return fmt.Errorf("read weekly-overview.svg: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "weekly-overview.svg", Content: overviewSVG})
 
-		fmt.Printf("Published %d files to %s/%s branch %s\n", len(files), parts[0], parts[1], cfg.OutputBranch)
+			durationSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir))
+			if err != nil {
+				return fmt.Errorf("read weekly-duration.svg: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "weekly-duration.svg", Content: durationSVG})
+
+			snapshotData, err := os.ReadFile(snapshotPath)
+			if err != nil {
+				return fmt.Errorf("read snapshot: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "duration-snapshot.json", Content: snapshotData})
+
+			if err := publisher.CommitFiles(files); err != nil {
+				return fmt.Errorf("commit files: %w", err)
+			}
+
+			fmt.Printf("Published %d files to %s/%s branch %s\n", len(files), parts[0], parts[1], cfg.OutputBranch)
+		}
 	}
 
 	return nil

@@ -40,7 +40,7 @@
 
 <image width=360 src="assets/image/settings.png">
 
-添加一个名为 `USER_ID` 的 `Variable`，值为你刚才获取到的用户 ID。
+添加一个名为 `NETEASE_USER_ID` 的 `Variable`，值为你刚才获取到的用户 ID。
 
 <image width=360 src="assets/image/variable.png">
 
@@ -53,7 +53,7 @@
 <image width=360 src="https://user-images.githubusercontent.com/31311826/133136019-63bbf232-d8d0-469d-8a45-f46fffdbeaab.png"/>
 
 
-回到 `Secrets and Variables` 页面，添加一个名为 `USER_TOKEN` 的 `Secret`，值为你刚才获取到的 `MUSIC_U` 的值。
+回到 `Secrets and Variables` 页面，添加一个名为 `NETEASE_USER_TOKEN` 的 `Secret`，值为你刚才获取到的 `MUSIC_U` 的值。
 
 <image width=360 src="assets/image/secret.png">
 
@@ -75,10 +75,10 @@ git clone https://github.com/Arcadi4/netease-music-card.git
 
 需要设置以下环境变量：
 
-- `USER_ID` - 网易云音乐用户 ID
-- `GH_TOKEN` - GitHub Personal Access Token
-- `USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
-- `OUTPUT_BRANCH` - 输出分支，默认为 `svg`
+- `NETEASE_USER_ID` - 网易云音乐用户 ID
+- `NETEASE_USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
+- `OUTPUT_BRANCH` - 输出分支，默认为 `svg`（可选）
+- `GITHUB_TOKEN` - GitHub Token（可选，不设置则跳过发布）
 
 运行程序：
 

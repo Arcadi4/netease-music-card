@@ -41,15 +41,22 @@
 
 `Fork` 项目或者新建一份。
 
+需要设置以下环境变量：
+* `USER_ID` - 网易云音乐用户 ID
+* `USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
+* `GH_TOKEN` - GitHub Personal Access Token
+* `AUTHOR` - GitHub 用户名
+* `REPO` - 仓库名称
+
+运行程序：
+
+```bash
+go run ./cmd/cardgen
 ```
-npm install
-```
 
-`card` 文件夹下为测试界面部分，可以自己设计界面。
+如果你想直接在仓库的 `workflow` 里面查看详细的输出，可以不需要本地环境变量
 
-如果你想直接在仓库的 `workflow` 里面查看详细的输出，可以不需要 `.env` 文件
-
-如果你想在本地测试网易云 API 并且查看，请填写相应的值，并注意在 `push` 到仓库之前删除它
+如果你想在本地测试网易云 API 并且查看，请设置相应的环境变量，并注意在 `push` 到仓库之前删除敏感信息
 
 ## ❤️ 灵感和帮助：
 
@@ -62,7 +69,7 @@ npm install
 ## 🤔 工作原理：
 
 * 使用 [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 获取听歌记录
-* 基于 Github API 将 `index.js` 处理好的 `svg` 写入到仓库中
+* 基于 Github API 将 Go 程序处理好的 `svg` 写入到仓库中
 * 使用 Github Actions 定期更新 `card.svg`
 
 ## 📄 开源协议

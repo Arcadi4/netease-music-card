@@ -164,7 +164,7 @@ func (p *GitHubPublisher) createTree(files []FileToCommit, baseSHA string) (stri
 
 func (p *GitHubPublisher) createCommit(treeSHA, parentSHA string) (string, error) {
 	payload := map[string]interface{}{
-		"message": "Update music cards and duration snapshot",
+		"message": "Update music cards",
 		"tree":    treeSHA,
 	}
 	if parentSHA != "" {

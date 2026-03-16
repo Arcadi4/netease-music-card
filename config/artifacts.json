@@ -1,0 +1,28 @@
+{
+  "outputs": {
+    "svg": {
+      "card": "card.svg",
+      "topArtists": "top-artists.svg",
+      "topTracks": "top-tracks.svg",
+      "weeklyOverview": "weekly-overview.svg",
+      "weeklyDuration": "weekly-duration.svg"
+    },
+    "png": {
+      "card": "card.png",
+      "topArtists": "top-artists.png",
+      "topTracks": "top-tracks.png",
+      "weeklyOverview": "weekly-overview.png",
+      "weeklyDuration": "weekly-duration.png"
+    },
+    "json": {
+      "normalized": "music-data.json"
+    }
+  },
+  "dimensions": {
+    "card": { "width": 310, "height": 490 },
+    "topArtists": { "width": 310, "height": 320 },
+    "topTracks": { "width": 310, "height": 330 },
+    "weeklyOverview": { "width": 310, "height": 260 },
+    "weeklyDuration": { "width": 310, "height": 260 }
+  }
+}

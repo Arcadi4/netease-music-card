@@ -92,9 +92,9 @@
                 </div>
                 <div class="chart">
                 <div class="bar-col">
-                    <div class="bar-label-top"></div>
+                    <div class="bar-label-top">95m</div>
                     <div class="bar-wrap">
-                        <div class="bar empty" style="height: 10px;"></div>
+                        <div class="bar filled" style="height: 100px;"></div>
                     </div>
                     <div class="bar-day">Mon</div>
                 </div>
@@ -106,37 +106,37 @@
                     <div class="bar-day">Tue</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top">28m</div>
+                    <div class="bar-label-top"></div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 14.035087719298245px;"></div>
+                        <div class="bar empty" style="height: 10px;"></div>
                     </div>
                     <div class="bar-day">Wed</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top">56m</div>
+                    <div class="bar-label-top"></div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 28.07017543859649px;"></div>
+                        <div class="bar empty" style="height: 10px;"></div>
                     </div>
                     <div class="bar-day">Thu</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top">28m</div>
+                    <div class="bar-label-top"></div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 14.035087719298245px;"></div>
+                        <div class="bar empty" style="height: 10px;"></div>
                     </div>
                     <div class="bar-day">Fri</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top">200m</div>
+                    <div class="bar-label-top"></div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 100px;"></div>
+                        <div class="bar empty" style="height: 10px;"></div>
                     </div>
                     <div class="bar-day">Sat</div>
                 </div>
                 <div class="bar-col">
-                    <div class="bar-label-top">63m</div>
+                    <div class="bar-label-top"></div>
                     <div class="bar-wrap">
-                        <div class="bar filled" style="height: 31.57894736842105px;"></div>
+                        <div class="bar empty" style="height: 10px;"></div>
                     </div>
                     <div class="bar-day">Sun</div>
                 </div></div>

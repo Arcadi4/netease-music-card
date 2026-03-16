@@ -1,52 +1,84 @@
-<div align="center"><img src="https://github.com/Arcadi4/netease-music-card/blob/svg/card.svg"></div>
+<div align="center">
 
-<div align="center"><h1>neteasemusic-github-profile</h1></div>
+<table>
+ <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/card.svg">
+ </td>
+ <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/top-artists.svg">
+ </td>
+ <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/top-tracks.svg">
+ </td>
+  <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/weekly-duration.svg">
+ </td>
+   <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/weekly-overview.svg">
+ </td>
+</table>
 
-<div align="center">🎧 在 Github Profile 显示你这周在网易云音乐上最喜欢听的歌曲 🎵</div>
+<h1>Netease Music Cards</h1>
 
-## 🚀使用方法：
+🎧 在 Github Profile 显示你这周在网易云音乐上最喜欢听的歌曲 🎵
+
+</div>
+
+## 🚀 使用方法
+
+### 1. Fork 本仓库
+
+注意只 fork `main` 分支。
+
+### 2. 获取网易云音乐用户ID
+
+进入网页端网易云音乐用户主页，URL 中 `https://music.163.com/#/user/home?id=123456789` 的 `123456789` 就是用户 ID 了。
+
+<image width=360 src="https://user-images.githubusercontent.com/31311826/133114645-1a27d063-971d-4ede-9775-52f8052ef655.png">
+
+然后在你 fork 的仓库中打开 `Settings > Security > Secrets and Variables > Actions`
+
+<image width=360 src="assets/image/settings.png">
+
+添加一个名为 `USER_ID` 的 `Variable`，值为你刚才获取到的用户 ID。
+
+<image width=360 src="assets/image/variable.png">
+
+### 3. 获取网易云音乐用户TOKEN (Cookie)
+
+访问 [网易云音乐](https://music.163.com/) 网页端，登录你的账号。
+
+打开网页控制台（通常为`f12`），找到 Application 下 Cookie 为 `MUSIC_U` 的值:
+
+<image width=360 src="https://user-images.githubusercontent.com/31311826/133136019-63bbf232-d8d0-469d-8a45-f46fffdbeaab.png"/>
 
 
-### 🎒 `Fork` 一份此仓库或者自己新建一个仓库
+回到 `Secrets and Variables` 页面，添加一个名为 `USER_TOKEN` 的 `Secret`，值为你刚才获取到的 `MUSIC_U` 的值。
 
-### 1. 获取网易云音乐用户 `id`
-
-![image](https://user-images.githubusercontent.com/31311826/133114645-1a27d063-971d-4ede-9775-52f8052ef655.png)
-
-然后修改 [main.yml](https://github.com/Nthily/netease-music-card/blob/main/.github/workflows/main.yml#L21) 中的 `USER_ID`
-
-### 2. 获取网易云音乐用户的 `TOKEN`
- * 打开网页控制台，找到 Application 下 Cookie 为 `MUSIC_U` 的值
-![}QV)3FH9@L9LUJ({35JJI}M](https://user-images.githubusercontent.com/31311826/133136019-63bbf232-d8d0-469d-8a45-f46fffdbeaab.png)
- * 打开自己项目中的设置，找到 `Secrets` 新建一个名为 `USER_TOKEN` 的 `Secrets`
- ![image](https://user-images.githubusercontent.com/31311826/133136507-fb2b61f8-1c09-40b8-bb7e-90e3f43b2c55.png)
- * 将第一步获取到的值粘贴进去
-
-### 3. 修改 `main.yml`
-将 [main.yml](https://github.com/Nthily/netease-music-card/blob/main/.github/workflows/main.yml#L24) 中的 `USER_ID` 和 `USER_TOKEN` 配置为你自己的值（仓库会自动识别）
+<image width=360 src="assets/image/secret.png">
 
 ### 4. 引用图片
 
-最后只需要在你的 github profile 仓库添加图片链接即可
+图片会生成在 `.github/workflows/main.yml` 中指定的分支（默认为 `svg`）中。
 
-`![card](https://github.com/你的 Github 用户名/netease-music-card/blob/main/card.svg)`
+最后只需要在你的 github profile 仓库添加图片链接即可。
 
-你也可以使用 [Jsdelivr](https://www.jsdelivr.com/?docs=gh) CDN 来引用图片
-
-`![card](https://cdn.jsdelivr.net/gh/你的 Github 用户名/netease-music-card/card.svg)`
+`![card](https://github.com/GitHub用户名/netease-music-card/blob/svg/card.svg)`
 
 你也可以将这个图片部署到你的博客等地方 😋
 
-## 💨 本地测试：
+## 💨 本地测试
 
-`Fork` 项目或者新建一份。
+```bash
+git clone https://github.com/Arcadi4/netease-music-card.git
+```
 
 需要设置以下环境变量：
-* `USER_ID` - 网易云音乐用户 ID
-* `USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
-* `GH_TOKEN` - GitHub Personal Access Token
 
-仓库会优先从 `GITHUB_REPOSITORY` 自动识别；本地运行会回退到 `git remote origin` 自动解析。
+- `USER_ID` - 网易云音乐用户 ID
+- `GH_TOKEN` - GitHub Personal Access Token
+- `USER_TOKEN` - 网易云音乐 Cookie (MUSIC_U)
+- `OUTPUT_BRANCH` - 输出分支，默认为 `svg`
 
 运行程序：
 
@@ -54,46 +86,11 @@
 go run ./cmd/cardgen
 ```
 
-如果你想直接在仓库的 `workflow` 里面查看详细的输出，可以不需要本地环境变量
+## ❤️ 灵感和帮助
 
-如果你想在本地测试网易云 API 并且查看，请设置相应的环境变量，并注意在 `push` 到仓库之前删除敏感信息
+本项目基于 [12og3r/netease-music-card](https://github.com/12og3r/netease-music-card) 以go重构，并添加更多样式。
 
-## ❤️ 灵感和帮助：
+## 🤔 工作原理
 
-[spotify-github-profile](https://github.com/kittinan/spotify-github-profile)
-
-[netease-music-box](https://github.com/Leecason/netease-music-box)
-
-[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
-
-## 🤔 工作原理：
-
-* 使用 [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 获取听歌记录
-* 基于 Github API 将 Go 程序处理好的 `svg` 写入到仓库中
-* 使用 Github Actions 定期更新 `card.svg`
-
-## 📄 开源协议
-
-```
-MIT License
-
-Copyright (c) 2021 Nthily
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+- 抓取网易云音乐用户数据，使用 Go 模板生成 `svg` 图片
+- 使用 GitHub Actions 定时更新图片

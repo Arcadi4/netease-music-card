@@ -17,13 +17,15 @@ jobs:
           git fetch origin svg
           git checkout origin/svg -- duration-snapshot.json || true
           test -f duration-snapshot.json || printf '{}' > duration-snapshot.json
-      - name: Setup
-        run: npm install
-      - name: index.js
-        run: node index.js
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+      - name: Run cardgen
+        run: go run ./cmd/cardgen
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USER_ID: 1696843520
+          USER_ID: ${{ vars.NETEASE_USER_ID }}
           USER_TOKEN: ${{ secrets.NETEASE_USER_TOKEN }}
           REPO: "netease-music-card"
           AUTHOR: "Arcadi4"

@@ -362,7 +362,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 			return fmt.Errorf("marshal derived data: %w", err)
 		}
 
-		if err := os.WriteFile(dumpPath, data, 0644); err != nil {
+		if err := os.WriteFile(dumpPath, data, 0o644); err != nil {
 			return fmt.Errorf("write derived data: %w", err)
 		}
 
@@ -386,7 +386,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 			return fmt.Errorf("marshal duration data: %w", err)
 		}
 
-		if err := os.WriteFile(dumpDuration, data, 0644); err != nil {
+		if err := os.WriteFile(dumpDuration, data, 0o644); err != nil {
 			return fmt.Errorf("write duration data: %w", err)
 		}
 
@@ -400,7 +400,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 			return fmt.Errorf("load CSS: %w", err)
 		}
 
-		if err := os.MkdirAll(outputDir, 0755); err != nil {
+		if err := os.MkdirAll(outputDir, 0o755); err != nil {
 			return fmt.Errorf("create output dir: %w", err)
 		}
 
@@ -411,7 +411,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/top-artists.svg", outputDir), topArtistsSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/top-artists.svg", outputDir), topArtistsSVG, 0o644); err != nil {
 			return fmt.Errorf("write top-artists.svg: %w", err)
 		}
 
@@ -422,7 +422,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		if err != nil {
 			return fmt.Errorf("render top tracks: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/top-tracks.svg", outputDir), topTracksSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/top-tracks.svg", outputDir), topTracksSVG, 0o644); err != nil {
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
@@ -436,7 +436,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		if err != nil {
 			return fmt.Errorf("render weekly overview: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0o644); err != nil {
 			return fmt.Errorf("write weekly-overview.svg: %w", err)
 		}
 
@@ -444,7 +444,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		if err != nil {
 			return fmt.Errorf("render weekly duration: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0o644); err != nil {
 			return fmt.Errorf("write weekly-duration.svg: %w", err)
 		}
 
@@ -461,7 +461,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		if err != nil {
 			return fmt.Errorf("render card: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0o644); err != nil {
 			return fmt.Errorf("write card.svg: %w", err)
 		}
 
@@ -637,7 +637,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 			return fmt.Errorf("load CSS: %w", err)
 		}
 
-		if err := os.MkdirAll(outputDir, 0755); err != nil {
+		if err := os.MkdirAll(outputDir, 0o755); err != nil {
 			return fmt.Errorf("create output dir: %w", err)
 		}
 
@@ -648,7 +648,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/top-artists.svg", outputDir), topArtistsSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/top-artists.svg", outputDir), topArtistsSVG, 0o644); err != nil {
 			return fmt.Errorf("write top-artists.svg: %w", err)
 		}
 
@@ -659,7 +659,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 		if err != nil {
 			return fmt.Errorf("render top tracks: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/top-tracks.svg", outputDir), topTracksSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/top-tracks.svg", outputDir), topTracksSVG, 0o644); err != nil {
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
@@ -673,7 +673,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 		if err != nil {
 			return fmt.Errorf("render weekly overview: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0o644); err != nil {
 			return fmt.Errorf("write weekly-overview.svg: %w", err)
 		}
 
@@ -681,7 +681,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 		if err != nil {
 			return fmt.Errorf("render weekly duration: %w", err)
 		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0644); err != nil {
+		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0o644); err != nil {
 			return fmt.Errorf("write weekly-duration.svg: %w", err)
 		}
 
@@ -699,7 +699,7 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 			if err != nil {
 				return fmt.Errorf("render card: %w", err)
 			}
-			if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0644); err != nil {
+			if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0o644); err != nil {
 				return fmt.Errorf("write card.svg: %w", err)
 			}
 			fmt.Printf("Rendered 5 SVG files to %s\n", outputDir)

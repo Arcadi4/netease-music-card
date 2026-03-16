@@ -27,7 +27,7 @@ func Save(path string, snapshot DurationSnapshot) error {
 		return err
 	}
 
-	return os.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 0o644)
 }
 
 func Update(snapshot DurationSnapshot, listenSongs int, todayISO string) DurationSnapshot {

@@ -7,14 +7,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/Nthily/netease-music-card/internal/config"
 	"github.com/Nthily/netease-music-card/internal/domain"
 	"github.com/Nthily/netease-music-card/internal/netease"
 	"github.com/Nthily/netease-music-card/internal/publish"
 	"github.com/Nthily/netease-music-card/internal/render"
-	"github.com/Nthily/netease-music-card/internal/snapshot"
 )
 
 func main() {
@@ -32,9 +30,6 @@ func main() {
 	configPath := flag.String("config", "", "Path to artifacts config JSON")
 	outputDir := flag.String("output-dir", ".", "Output directory for generated files")
 	stylePath := flag.String("style", "", "Path to CSS override file")
-	snapshotSelfCheck := flag.Bool("snapshot-self-check", false, "Validate snapshot load/save without API calls")
-	dumpDuration := flag.String("dump-duration", "", "Dump duration data to JSON file")
-	snapshotPath := flag.String("snapshot-path", "duration-snapshot.json", "Path to duration snapshot file")
 	assetSelfCheck := flag.Bool("asset-self-check", false, "Validate asset encoding without network calls")
 	simulateFetchError := flag.Bool("simulate-fetch-error", false, "Simulate fetch error for testing")
 	publishSelfCheck := flag.Bool("publish-self-check", false, "Validate GitHub publisher without making commits")
@@ -84,15 +79,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	if *snapshotSelfCheck {
-		if err := runSnapshotSelfCheck(*snapshotPath); err != nil {
-			fmt.Fprintf(os.Stderr, "Snapshot self-check failed: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("SNAPSHOT_SELF_CHECK_OK")
-		os.Exit(0)
-	}
-
 	if *assetSelfCheck {
 		if err := runAssetSelfCheck(*simulateFetchError); err != nil {
 			fmt.Fprintf(os.Stderr, "Asset self-check failed: %v\n", err)
@@ -117,7 +103,7 @@ func main() {
 
 	if *fixture || *fixtureZeroPlay {
 		_ = *configPath
-		if err := runFixtureMode(*dumpDerived, *dumpDuration, *skipRender, *skipPublish, *skipPNG, *fixtureZeroPlay, *outputDir, *stylePath); err != nil {
+		if err := runFixtureMode(*dumpDerived, *skipRender, *skipPublish, *skipPNG, *fixtureZeroPlay, *outputDir, *stylePath); err != nil {
 			fmt.Fprintf(os.Stderr, "Fixture mode failed: %v\n", err)
 			os.Exit(1)
 		}
@@ -130,7 +116,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := runProductionPipeline(cfg, *snapshotPath, *outputDir, *stylePath, *skipRender, *skipPublish); err != nil {
+	if err := runProductionPipeline(cfg, *outputDir, *stylePath, *skipRender, *skipPublish); err != nil {
 		fmt.Fprintf(os.Stderr, "Production pipeline failed: %v\n", err)
 		os.Exit(1)
 	}
@@ -158,40 +144,6 @@ func runCheckAuth(cookie, userID string) error {
 	client := netease.NewClient(userID, cookie)
 	_, err := client.UserAccount()
 	return err
-}
-
-func runSnapshotSelfCheck(path string) error {
-	testSnap := snapshot.DurationSnapshot{
-		"2026-03-10": 100,
-		"2026-03-11": 150,
-		"2026-03-12": 200,
-	}
-
-	if err := snapshot.Save(path, testSnap); err != nil {
-		return fmt.Errorf("save snapshot: %w", err)
-	}
-
-	loaded, err := snapshot.Load(path)
-	if err != nil {
-		return fmt.Errorf("load snapshot: %w", err)
-	}
-
-	if len(loaded) != len(testSnap) {
-		return fmt.Errorf("loaded snapshot length mismatch: got %d, want %d", len(loaded), len(testSnap))
-	}
-
-	for k, v := range testSnap {
-		if loaded[k] != v {
-			return fmt.Errorf("snapshot value mismatch for %s: got %d, want %d", k, loaded[k], v)
-		}
-	}
-
-	updated := snapshot.Update(loaded, 250, "2026-03-13")
-	if err := snapshot.Save(path, updated); err != nil {
-		return fmt.Errorf("save updated snapshot: %w", err)
-	}
-
-	return nil
 }
 
 func getFixtureWeekData() []map[string]interface{} {
@@ -338,7 +290,7 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 	}
 }
 
-func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skipPNG, zeroPlay bool, outputDir, stylePath string) error {
+func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay bool, outputDir, stylePath string) error {
 	var fixtureData []map[string]interface{}
 	if zeroPlay {
 		fixtureData = getZeroPlayFixtureWeekData()
@@ -367,30 +319,6 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 		}
 
 		fmt.Printf("Derived data written to %s\n", dumpPath)
-	}
-
-	snap := snapshot.DurationSnapshot{
-		"2026-03-10": 100,
-		"2026-03-11": 150,
-		"2026-03-12": 200,
-		"2026-03-13": 250,
-		"2026-03-14": 300,
-		"2026-03-15": 350,
-		"2026-03-16": 400,
-	}
-	durations := domain.DeriveDailyDurations(snap, 3.5)
-
-	if dumpDuration != "" {
-		data, err := json.MarshalIndent(durations, "", "  ")
-		if err != nil {
-			return fmt.Errorf("marshal duration data: %w", err)
-		}
-
-		if err := os.WriteFile(dumpDuration, data, 0o644); err != nil {
-			return fmt.Errorf("write duration data: %w", err)
-		}
-
-		fmt.Printf("Duration data written to %s\n", dumpDuration)
 	}
 
 	if !skipRender {
@@ -440,14 +368,6 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 			return fmt.Errorf("write weekly-overview.svg: %w", err)
 		}
 
-		durationSVG, err := render.RenderWeeklyDuration(durations, css)
-		if err != nil {
-			return fmt.Errorf("render weekly duration: %w", err)
-		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0o644); err != nil {
-			return fmt.Errorf("write weekly-duration.svg: %w", err)
-		}
-
 		cardSVG, err := render.RenderCard(render.CardData{
 			CSS:          css,
 			AvatarBase64: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
@@ -465,7 +385,7 @@ func runFixtureMode(dumpPath, dumpDuration string, skipRender, skipPublish, skip
 			return fmt.Errorf("write card.svg: %w", err)
 		}
 
-		fmt.Printf("Rendered 5 SVG files to %s\n", outputDir)
+		fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
 	}
 
 	fmt.Printf("Fixture mode: topArtists=%d, topTracks=%d, totalPlays=%d\n",
@@ -521,7 +441,7 @@ func runPublishSelfCheck() error {
 	return nil
 }
 
-func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePath string, skipRender, skipPublish bool) error {
+func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skipRender, skipPublish bool) error {
 	client := netease.NewClient(cfg.UserID, cfg.UserToken)
 
 	authFailed := false
@@ -599,37 +519,9 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 		_ = account
 	}
 
-	snap, err := snapshot.Load(snapshotPath)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Load snapshot failed: %v, using empty snapshot\n", err)
-		snap = snapshot.DurationSnapshot{}
-	}
-
-	var totalDuration int
-	if len(weekData) > 0 {
-		for _, entry := range weekData {
-			if pc, ok := entry["playCount"].(float64); ok {
-				totalDuration += int(pc) * 210
-			} else if pc, ok := entry["playCount"].(int); ok {
-				totalDuration += pc * 210
-			} else if score, ok := entry["score"].(float64); ok {
-				totalDuration += int(score) * 210
-			} else if score, ok := entry["score"].(int); ok {
-				totalDuration += score * 210
-			}
-		}
-	}
-
-	snap = snapshot.Update(snap, totalDuration, time.Now().Format("2006-01-02"))
-
-	if err := snapshot.Save(snapshotPath, snap); err != nil {
-		return fmt.Errorf("save snapshot: %w", err)
-	}
-
 	topArtists := domain.DeriveTopArtists(weekData, 5)
 	topTracks := domain.DeriveTopTracks(weekData, 5)
 	overview := domain.DeriveWeeklyOverview(weekData)
-	durations := domain.DeriveDailyDurations(snap, 3.5)
 
 	if !skipRender {
 		css, err := render.LoadCSS(stylePath)
@@ -677,14 +569,6 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 			return fmt.Errorf("write weekly-overview.svg: %w", err)
 		}
 
-		durationSVG, err := render.RenderWeeklyDuration(durations, css)
-		if err != nil {
-			return fmt.Errorf("render weekly duration: %w", err)
-		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir), durationSVG, 0o644); err != nil {
-			return fmt.Errorf("write weekly-duration.svg: %w", err)
-		}
-
 		if !authFailed {
 			cardSVG, err := render.RenderCard(render.CardData{
 				CSS:          css,
@@ -702,9 +586,9 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 			if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0o644); err != nil {
 				return fmt.Errorf("write card.svg: %w", err)
 			}
-			fmt.Printf("Rendered 5 SVG files to %s\n", outputDir)
+			fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
 		} else {
-			fmt.Printf("Rendered 4 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
+			fmt.Printf("Rendered 3 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
 		}
 	}
 
@@ -746,18 +630,6 @@ func runProductionPipeline(cfg *config.Config, snapshotPath, outputDir, stylePat
 				return fmt.Errorf("read weekly-overview.svg: %w", err)
 			}
 			files = append(files, publish.FileToCommit{Path: "weekly-overview.svg", Content: overviewSVG})
-
-			durationSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-duration.svg", outputDir))
-			if err != nil {
-				return fmt.Errorf("read weekly-duration.svg: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "weekly-duration.svg", Content: durationSVG})
-
-			snapshotData, err := os.ReadFile(snapshotPath)
-			if err != nil {
-				return fmt.Errorf("read snapshot: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "duration-snapshot.json", Content: snapshotData})
 
 			if err := publisher.CommitFiles(files); err != nil {
 				return fmt.Errorf("commit files: %w", err)

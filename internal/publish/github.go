@@ -53,9 +53,18 @@ func (p *GitHubPublisher) CommitFiles(files []FileToCommit) error {
 		return fmt.Errorf("get branch SHA: %w", err)
 	}
 
+	parentTreeSHA, err := p.getCommitTreeSHA(sha)
+	if err != nil {
+		return fmt.Errorf("get parent tree SHA: %w", err)
+	}
+
 	treeSHA, err := p.createTree(files, sha)
 	if err != nil {
 		return fmt.Errorf("create tree: %w", err)
+	}
+
+	if treeSHA == parentTreeSHA {
+		return nil
 	}
 
 	commitSHA, err := p.createCommit(treeSHA, sha)
@@ -91,6 +100,25 @@ func (p *GitHubPublisher) getBranchSHA() (string, error) {
 	}
 
 	return result.Object.SHA, nil
+}
+
+func (p *GitHubPublisher) getCommitTreeSHA(commitSHA string) (string, error) {
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/git/commits/%s", p.owner, p.repo, commitSHA)
+	body, err := p.request("GET", url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	var result struct {
+		Tree struct {
+			SHA string `json:"sha"`
+		} `json:"tree"`
+	}
+	if err := json.Unmarshal(body, &result); err != nil {
+		return "", fmt.Errorf("parse response: %w", err)
+	}
+
+	return result.Tree.SHA, nil
 }
 
 func (p *GitHubPublisher) createTree(files []FileToCommit, baseSHA string) (string, error) {

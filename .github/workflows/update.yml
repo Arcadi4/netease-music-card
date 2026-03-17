@@ -1,4 +1,7 @@
-name: NeteaseMusic
+name: UpdateCards
+permissions:
+  contents: write
+
 on:
   push:
     branches:

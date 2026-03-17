@@ -640,29 +640,11 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 			}
 			files = append(files, publish.FileToCommit{Path: "weekly-overview.svg", Content: overviewSVG})
 
-			topArtistsJSON, err := os.ReadFile("data/top-artists.json")
+			weekDataJSON, err := os.ReadFile("data/week-data.json")
 			if err != nil {
-				return fmt.Errorf("read data/top-artists.json: %w", err)
+				return fmt.Errorf("read data/week-data.json: %w", err)
 			}
-			files = append(files, publish.FileToCommit{Path: "data/top-artists.json", Content: topArtistsJSON})
-
-			topTracksJSON, err := os.ReadFile("data/top-tracks.json")
-			if err != nil {
-				return fmt.Errorf("read data/top-tracks.json: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "data/top-tracks.json", Content: topTracksJSON})
-
-			weeklyOverviewJSON, err := os.ReadFile("data/weekly-overview.json")
-			if err != nil {
-				return fmt.Errorf("read data/weekly-overview.json: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "data/weekly-overview.json", Content: weeklyOverviewJSON})
-
-			cardInputJSON, err := os.ReadFile("data/card-input.json")
-			if err != nil {
-				return fmt.Errorf("read data/card-input.json: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "data/card-input.json", Content: cardInputJSON})
+			files = append(files, publish.FileToCommit{Path: "data/week-data.json", Content: weekDataJSON})
 
 			if err := publisher.CommitFiles(files); err != nil {
 				return fmt.Errorf("commit files: %w", err)

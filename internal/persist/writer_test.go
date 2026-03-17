@@ -6,63 +6,29 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Nthily/netease-music-card/internal/domain"
 	"github.com/Nthily/netease-music-card/internal/persist"
 )
 
 func TestWrite_JSONUnmarshalsCorrectly(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	artifacts := persist.Artifacts{
-		TopArtists: []domain.Artist{
-			{ID: 1, Name: "Artist1", Plays: 100},
-			{ID: 2, Name: "Artist2", Plays: 80},
-		},
-		TopTracks: []domain.Track{
-			{Name: "Track1", Artists: "Artist1", Plays: 50},
-		},
-		WeeklyOverview: domain.Overview{
-			TotalPlays:      150,
-			UniqueSongs:     10,
-			UniqueArtists:   5,
-			RepeatIntensity: "high",
-		},
-		CardInput: persist.CardInput{
-			Nickname:    "TestUser",
-			SongName:    "TestSong",
-			SongAuthors: "TestArtist",
-			PlayCount:   42,
-			AuthFailed:  false,
-		},
+	weekData := []map[string]interface{}{
+		{"song": "Song1", "artist": "Artist1", "plays": 10},
+		{"song": "Song2", "artist": "Artist2", "plays": 5},
 	}
 
-	err := persist.Write(tmpDir, artifacts)
+	err := persist.Write(tmpDir, weekData)
 	if err != nil {
 		t.Fatalf("Write failed: %v", err)
 	}
 
-	var artists []domain.Artist
-	readJSON(t, filepath.Join(tmpDir, "data/top-artists.json"), &artists)
-	if len(artists) != 2 || artists[0].Name != "Artist1" {
-		t.Errorf("top-artists.json: got %+v, want 2 artists with first name Artist1", artists)
+	var result []map[string]interface{}
+	readJSON(t, filepath.Join(tmpDir, "data/week-data.json"), &result)
+	if len(result) != 2 {
+		t.Errorf("week-data.json: got %d entries, want 2", len(result))
 	}
-
-	var tracks []domain.Track
-	readJSON(t, filepath.Join(tmpDir, "data/top-tracks.json"), &tracks)
-	if len(tracks) != 1 || tracks[0].Name != "Track1" {
-		t.Errorf("top-tracks.json: got %+v, want 1 track named Track1", tracks)
-	}
-
-	var overview domain.Overview
-	readJSON(t, filepath.Join(tmpDir, "data/weekly-overview.json"), &overview)
-	if overview.TotalPlays != 150 {
-		t.Errorf("weekly-overview.json: got TotalPlays=%d, want 150", overview.TotalPlays)
-	}
-
-	var cardInput persist.CardInput
-	readJSON(t, filepath.Join(tmpDir, "data/card-input.json"), &cardInput)
-	if cardInput.Nickname != "TestUser" || cardInput.PlayCount != 42 {
-		t.Errorf("card-input.json: got %+v, want TestUser with 42 plays", cardInput)
+	if result[0]["song"] != "Song1" {
+		t.Errorf("week-data.json: got song=%v, want Song1", result[0]["song"])
 	}
 }
 
@@ -74,39 +40,46 @@ func TestWrite_OverwritesExistingFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	oldContent := []byte(`{"old": "data"}`)
-	if err := os.WriteFile(filepath.Join(dataDir, "top-artists.json"), oldContent, 0644); err != nil {
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	for _, file := range legacyFiles {
+		if err := os.WriteFile(filepath.Join(dataDir, file), []byte(`{"old": "data"}`), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	if err := os.WriteFile(filepath.Join(dataDir, "week-data.json"), []byte(`[{"old": "data"}]`), 0644); err != nil {
 		t.Fatal(err)
 	}
 
-	artifacts := persist.Artifacts{
-		TopArtists:     []domain.Artist{{ID: 1, Name: "NewArtist", Plays: 100}},
-		TopTracks:      []domain.Track{{Name: "Track1", Artists: "Artist1", Plays: 50}},
-		WeeklyOverview: domain.Overview{TotalPlays: 150},
-		CardInput:      persist.CardInput{Nickname: "User", SongName: "Song", SongAuthors: "Author", PlayCount: 10},
+	weekData := []map[string]interface{}{
+		{"song": "NewSong", "plays": 100},
 	}
 
-	err := persist.Write(tmpDir, artifacts)
+	err := persist.Write(tmpDir, weekData)
 	if err != nil {
 		t.Fatalf("Write failed: %v", err)
 	}
 
-	var artists []domain.Artist
-	readJSON(t, filepath.Join(tmpDir, "data/top-artists.json"), &artists)
-	if len(artists) != 1 || artists[0].Name != "NewArtist" {
-		t.Errorf("File not overwritten: got %+v, want NewArtist", artists)
+	var result []map[string]interface{}
+	readJSON(t, filepath.Join(tmpDir, "data/week-data.json"), &result)
+	if len(result) != 1 || result[0]["song"] != "NewSong" {
+		t.Errorf("week-data.json not overwritten: got %+v", result)
+	}
+
+	for _, file := range legacyFiles {
+		path := filepath.Join(dataDir, file)
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			t.Errorf("Legacy file %s should have been removed", file)
+		}
 	}
 }
 
 func TestWrite_InvalidPath(t *testing.T) {
-	artifacts := persist.Artifacts{
-		TopArtists:     []domain.Artist{{ID: 1, Name: "Artist", Plays: 100}},
-		TopTracks:      []domain.Track{{Name: "Track", Artists: "Artist", Plays: 50}},
-		WeeklyOverview: domain.Overview{TotalPlays: 150},
-		CardInput:      persist.CardInput{Nickname: "User", SongName: "Song", SongAuthors: "Author", PlayCount: 10},
+	weekData := []map[string]interface{}{
+		{"song": "Song1", "plays": 10},
 	}
 
-	err := persist.Write("/nonexistent/invalid/path", artifacts)
+	err := persist.Write("/nonexistent/invalid/path", weekData)
 	if err == nil {
 		t.Fatal("Expected error for invalid path, got nil")
 	}
@@ -123,47 +96,39 @@ func readJSON(t *testing.T, path string, v interface{}) {
 	}
 }
 
-func TestWrite_CreatesAllFourFiles(t *testing.T) {
+func TestWrite_CreatesWeekDataFile(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	artifacts := persist.Artifacts{
-		TopArtists: []domain.Artist{
-			{ID: 1, Name: "Artist1", Plays: 100},
-		},
-		TopTracks: []domain.Track{
-			{Name: "Track1", Artists: "Artist1", Plays: 50},
-		},
-		WeeklyOverview: domain.Overview{
-			TotalPlays:      150,
-			UniqueSongs:     10,
-			UniqueArtists:   5,
-			RepeatIntensity: "high",
-		},
-		CardInput: persist.CardInput{
-			Nickname:    "TestUser",
-			SongName:    "TestSong",
-			SongAuthors: "TestArtist",
-			PlayCount:   42,
-			AuthFailed:  false,
-		},
+	dataDir := filepath.Join(tmpDir, "data")
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		t.Fatal(err)
 	}
 
-	err := persist.Write(tmpDir, artifacts)
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	for _, file := range legacyFiles {
+		if err := os.WriteFile(filepath.Join(dataDir, file), []byte(`{"legacy": true}`), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	weekData := []map[string]interface{}{
+		{"song": "Song1", "plays": 10},
+	}
+
+	err := persist.Write(tmpDir, weekData)
 	if err != nil {
 		t.Fatalf("Write failed: %v", err)
 	}
 
-	files := []string{
-		"data/top-artists.json",
-		"data/top-tracks.json",
-		"data/weekly-overview.json",
-		"data/card-input.json",
+	weekDataPath := filepath.Join(tmpDir, "data/week-data.json")
+	if _, err := os.Stat(weekDataPath); os.IsNotExist(err) {
+		t.Errorf("Expected file week-data.json does not exist")
 	}
 
-	for _, file := range files {
-		path := filepath.Join(tmpDir, file)
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			t.Errorf("Expected file %s does not exist", file)
+	for _, file := range legacyFiles {
+		path := filepath.Join(dataDir, file)
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			t.Errorf("Legacy file %s should have been removed", file)
 		}
 	}
 }

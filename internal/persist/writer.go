@@ -7,26 +7,19 @@ import (
 	"path/filepath"
 )
 
-func Write(rootDir string, artifacts Artifacts) error {
+func Write(rootDir string, weekData []map[string]interface{}) error {
 	dataDir := filepath.Join(rootDir, "data")
 	if err := os.MkdirAll(dataDir, 0755); err != nil {
 		return fmt.Errorf("create data directory: %w", err)
 	}
 
-	files := map[string]interface{}{
-		"top-artists.json":     artifacts.TopArtists,
-		"top-tracks.json":      artifacts.TopTracks,
-		"weekly-overview.json": artifacts.WeeklyOverview,
-		"card-input.json":      artifacts.CardInput,
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	for _, file := range legacyFiles {
+		path := filepath.Join(dataDir, file)
+		os.Remove(path)
 	}
 
-	for name, data := range files {
-		if err := writeJSON(dataDir, name, data); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return writeJSON(dataDir, "week-data.json", weekData)
 }
 
 func writeJSON(dir, filename string, data interface{}) error {

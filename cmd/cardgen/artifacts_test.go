@@ -9,10 +9,7 @@ import (
 // TestDataArtifactContract verifies that fixture modes produce the expected data artifacts
 func TestDataArtifactContract(t *testing.T) {
 	expected := []string{
-		"data/card-input.json",
-		"data/top-artists.json",
-		"data/top-tracks.json",
-		"data/weekly-overview.json",
+		"data/week-data.json",
 	}
 
 	os.RemoveAll("data")

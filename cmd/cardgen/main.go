@@ -303,18 +303,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 	topTracks := domain.DeriveTopTracks(fixtureData, 5)
 	overview := domain.DeriveWeeklyOverview(fixtureData)
 
-	if err := persist.Write(".", persist.Artifacts{
-		TopArtists:     topArtists,
-		TopTracks:      topTracks,
-		WeeklyOverview: overview,
-		CardInput: persist.CardInput{
-			Nickname:    "测试用户",
-			SongName:    "孤独摇滚",
-			SongAuthors: "SICK HACK / Bocchi",
-			PlayCount:   42,
-			AuthFailed:  false,
-		},
-	}); err != nil {
+	if err := persist.Write(".", fixtureData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
 	}
 
@@ -539,18 +528,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 	topTracks := domain.DeriveTopTracks(weekData, 5)
 	overview := domain.DeriveWeeklyOverview(weekData)
 
-	if err := persist.Write(".", persist.Artifacts{
-		TopArtists:     topArtists,
-		TopTracks:      topTracks,
-		WeeklyOverview: overview,
-		CardInput: persist.CardInput{
-			Nickname:    nickname,
-			SongName:    songName,
-			SongAuthors: songAuthors,
-			PlayCount:   playCount,
-			AuthFailed:  authFailed,
-		},
-	}); err != nil {
+	if err := persist.Write(".", weekData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
 	}
 

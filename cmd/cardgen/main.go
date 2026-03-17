@@ -11,6 +11,7 @@ import (
 	"github.com/Nthily/netease-music-card/internal/config"
 	"github.com/Nthily/netease-music-card/internal/domain"
 	"github.com/Nthily/netease-music-card/internal/netease"
+	"github.com/Nthily/netease-music-card/internal/persist"
 	"github.com/Nthily/netease-music-card/internal/publish"
 	"github.com/Nthily/netease-music-card/internal/render"
 )
@@ -302,6 +303,21 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 	topTracks := domain.DeriveTopTracks(fixtureData, 5)
 	overview := domain.DeriveWeeklyOverview(fixtureData)
 
+	if err := persist.Write(".", persist.Artifacts{
+		TopArtists:     topArtists,
+		TopTracks:      topTracks,
+		WeeklyOverview: overview,
+		CardInput: persist.CardInput{
+			Nickname:    "测试用户",
+			SongName:    "孤独摇滚",
+			SongAuthors: "SICK HACK / Bocchi",
+			PlayCount:   42,
+			AuthFailed:  false,
+		},
+	}); err != nil {
+		return fmt.Errorf("persist data: %w", err)
+	}
+
 	if dumpPath != "" {
 		derived := map[string]interface{}{
 			"topArtists": topArtists,
@@ -522,6 +538,21 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 	topArtists := domain.DeriveTopArtists(weekData, 5)
 	topTracks := domain.DeriveTopTracks(weekData, 5)
 	overview := domain.DeriveWeeklyOverview(weekData)
+
+	if err := persist.Write(".", persist.Artifacts{
+		TopArtists:     topArtists,
+		TopTracks:      topTracks,
+		WeeklyOverview: overview,
+		CardInput: persist.CardInput{
+			Nickname:    nickname,
+			SongName:    songName,
+			SongAuthors: songAuthors,
+			PlayCount:   playCount,
+			AuthFailed:  authFailed,
+		},
+	}); err != nil {
+		return fmt.Errorf("persist data: %w", err)
+	}
 
 	if !skipRender {
 		css, err := render.LoadCSS(stylePath)

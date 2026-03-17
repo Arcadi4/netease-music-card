@@ -17,7 +17,7 @@
 
 <h1>Netease Music Cards</h1>
 
-🎧 在 Github Profile 显示你这周在网易云音乐上最喜欢听的歌曲 🎵
+🎧 在 Github Profile (或者任何能插入图像url的地方) 展示你的独特音乐品味 🎵
 
 </div>
 
@@ -48,7 +48,6 @@
 打开网页控制台（通常为`f12`），找到 Application 下 Cookie 为 `MUSIC_U` 的值:
 
 <image width=360 src="https://user-images.githubusercontent.com/31311826/133136019-63bbf232-d8d0-469d-8a45-f46fffdbeaab.png"/>
-
 
 回到 `Secrets and Variables` 页面，添加一个名为 `NETEASE_USER_TOKEN` 的 `Secret`，值为你刚才获取到的 `MUSIC_U` 的值。
 

@@ -22,19 +22,19 @@
 </div>
 <div class="grid">
 <div class="cell">
-<div class="value">0</div>
+<div class="value">159</div>
 <div class="label">总播放 / Total Plays</div>
 </div>
 <div class="cell">
-<div class="value">0</div>
+<div class="value">100</div>
 <div class="label">不同歌曲 / Unique Songs</div>
 </div>
 <div class="cell">
-<div class="value">0</div>
+<div class="value">84</div>
 <div class="label">不同艺术家 / Artists</div>
 </div>
 <div class="cell">
-<div class="value">0%</div>
+<div class="value">5.7%</div>
 <div class="label">重复强度 / Repeat %</div>
 </div>
 </div>

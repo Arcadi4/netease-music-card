@@ -22,7 +22,42 @@
 <div class="subtitle">Weekly Top Artists</div>
 </div>
 <div class="list">
-<div class="empty-state">暂无数据 / No data</div>
+<div class="row">
+<div class="rank">1</div>
+<div class="info">
+<div class="name">SawanoHiroyuki[nZk]</div>
+<div class="plays">22 plays</div>
+</div>
+</div>
+<div class="row">
+<div class="rank">2</div>
+<div class="info">
+<div class="name">Tielle</div>
+<div class="plays">19 plays</div>
+</div>
+</div>
+<div class="row">
+<div class="rank">3</div>
+<div class="info">
+<div class="name">ヨルシカ</div>
+<div class="plays">15 plays</div>
+</div>
+</div>
+<div class="row">
+<div class="rank">4</div>
+<div class="info">
+<div class="name">十明</div>
+<div class="plays">13 plays</div>
+</div>
+</div>
+<div class="row">
+<div class="rank">5</div>
+<div class="info">
+<div class="name">宇多田ヒカル</div>
+<div class="plays">7 plays</div>
+</div>
+</div>
+
 </div>
 </div>
 </div>

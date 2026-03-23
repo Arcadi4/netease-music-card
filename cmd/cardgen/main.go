@@ -175,6 +175,11 @@ func getFixtureWeekData() []map[string]interface{} {
 					map[string]interface{}{"id": 101, "name": "SICK HACK"},
 					map[string]interface{}{"id": 102, "name": "Bocchi"},
 				},
+				"al": map[string]interface{}{
+					"id":     201,
+					"name":   "孤独摇滚 OST",
+					"picUrl": "https://p1.music.126.net/bocchi-ost/109951164001.jpg",
+				},
 			},
 		},
 		{
@@ -185,6 +190,11 @@ func getFixtureWeekData() []map[string]interface{} {
 				"name": "Guitar, Loneliness and Blue Planet",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 101, "name": "SICK HACK"},
+				},
+				"al": map[string]interface{}{
+					"id":     201,
+					"name":   "孤独摇滚 OST",
+					"picUrl": "https://p1.music.126.net/bocchi-ost/109951164001.jpg",
 				},
 			},
 		},
@@ -197,6 +207,11 @@ func getFixtureWeekData() []map[string]interface{} {
 				"ar": []interface{}{
 					map[string]interface{}{"id": 103, "name": "橡皮擦"},
 				},
+				"al": map[string]interface{}{
+					"id":     202,
+					"name":   "ぼっちざろっく",
+					"picUrl": "https://p1.music.126.net/bocchi-album/109951164002.jpg",
+				},
 			},
 		},
 		{
@@ -207,6 +222,11 @@ func getFixtureWeekData() []map[string]interface{} {
 				"name": "なにが悪い",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 104, "name": "斗志"},
+				},
+				"al": map[string]interface{}{
+					"id":     202,
+					"name":   "ぼっちざろっく",
+					"picUrl": "https://p1.music.126.net/bocchi-album/109951164002.jpg",
 				},
 			},
 		},
@@ -219,6 +239,11 @@ func getFixtureWeekData() []map[string]interface{} {
 				"ar": []interface{}{
 					map[string]interface{}{"id": 105, "name": "後藤ひとり"},
 				},
+				"al": map[string]interface{}{
+					"id":     203,
+					"name":   "ソルファ",
+					"picUrl": "https://p1.music.126.net/solfege/109951164003.jpg",
+				},
 			},
 		},
 		{
@@ -229,6 +254,75 @@ func getFixtureWeekData() []map[string]interface{} {
 				"name": "Long Longer",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 106, "name": "なにか"},
+				},
+				"al": map[string]interface{}{
+					"id":     203,
+					"name":   "ソルファ",
+					"picUrl": "https://p1.music.126.net/solfege/109951164003.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 15,
+			"score":     35,
+			"song": map[string]interface{}{
+				"id":   7,
+				"name": "星座になれたら",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 107, "name": "いきものがかり"},
+				},
+				"al": map[string]interface{}{
+					"id":     204,
+					"name":   "THE BOOK",
+					"picUrl": "https://p1.music.126.net/thebook/109951164004.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 12,
+			"score":     28,
+			"song": map[string]interface{}{
+				"id":   8,
+				"name": "光るなら",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 108, "name": "Goose house"},
+				},
+				"al": map[string]interface{}{
+					"id":     204,
+					"name":   "THE BOOK",
+					"picUrl": "https://p1.music.126.net/thebook/109951164004.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 8,
+			"score":     18,
+			"song": map[string]interface{}{
+				"id":   9,
+				"name": "夜に駆ける",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 109, "name": "YOASOBI"},
+				},
+				"al": map[string]interface{}{
+					"id":     205,
+					"name":   "THE BOOK 2",
+					"picUrl": "https://p1.music.126.net/thebook2/109951164005.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 20,
+			"score":     45,
+			"song": map[string]interface{}{
+				"id":   10,
+				"name": "怪物",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 110, "name": "YOASOBI"},
+				},
+				"al": map[string]interface{}{
+					"id":     206,
+					"name":   "Imitaion",
+					"picUrl": "https://p1.music.126.net/imitation/109951164006.jpg",
 				},
 			},
 		},
@@ -247,6 +341,11 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 					map[string]interface{}{"id": 101, "name": "SICK HACK"},
 					map[string]interface{}{"id": 102, "name": "Bocchi"},
 				},
+				"al": map[string]interface{}{
+					"id":     201,
+					"name":   "孤独摇滚 OST",
+					"picUrl": "https://p1.music.126.net/bocchi-ost/109951164001.jpg",
+				},
 			},
 		},
 		{
@@ -257,6 +356,11 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 				"name": "Guitar, Loneliness and Blue Planet",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 101, "name": "SICK HACK"},
+				},
+				"al": map[string]interface{}{
+					"id":     201,
+					"name":   "孤独摇滚 OST",
+					"picUrl": "https://p1.music.126.net/bocchi-ost/109951164001.jpg",
 				},
 			},
 		},
@@ -269,6 +373,11 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 				"ar": []interface{}{
 					map[string]interface{}{"id": 103, "name": "橡皮擦"},
 				},
+				"al": map[string]interface{}{
+					"id":     202,
+					"name":   "ぼっちざろっく",
+					"picUrl": "https://p1.music.126.net/bocchi-album/109951164002.jpg",
+				},
 			},
 		},
 		{
@@ -279,6 +388,11 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 				"name": "なにが悪い",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 104, "name": "斗志"},
+				},
+				"al": map[string]interface{}{
+					"id":     202,
+					"name":   "ぼっちざろっく",
+					"picUrl": "https://p1.music.126.net/bocchi-album/109951164002.jpg",
 				},
 			},
 		},
@@ -291,6 +405,11 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 				"ar": []interface{}{
 					map[string]interface{}{"id": 105, "name": "後藤ひとり"},
 				},
+				"al": map[string]interface{}{
+					"id":     203,
+					"name":   "ソルファ",
+					"picUrl": "https://p1.music.126.net/solfege/109951164003.jpg",
+				},
 			},
 		},
 		{
@@ -301,6 +420,75 @@ func getZeroPlayFixtureWeekData() []map[string]interface{} {
 				"name": "Long Longer",
 				"ar": []interface{}{
 					map[string]interface{}{"id": 106, "name": "なにか"},
+				},
+				"al": map[string]interface{}{
+					"id":     203,
+					"name":   "ソルファ",
+					"picUrl": "https://p1.music.126.net/solfege/109951164003.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 0,
+			"score":     35,
+			"song": map[string]interface{}{
+				"id":   7,
+				"name": "星座になれたら",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 107, "name": "いきものがかり"},
+				},
+				"al": map[string]interface{}{
+					"id":     204,
+					"name":   "THE BOOK",
+					"picUrl": "https://p1.music.126.net/thebook/109951164004.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 0,
+			"score":     28,
+			"song": map[string]interface{}{
+				"id":   8,
+				"name": "光るなら",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 108, "name": "Goose house"},
+				},
+				"al": map[string]interface{}{
+					"id":     204,
+					"name":   "THE BOOK",
+					"picUrl": "https://p1.music.126.net/thebook/109951164004.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 0,
+			"score":     18,
+			"song": map[string]interface{}{
+				"id":   9,
+				"name": "夜に駆ける",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 109, "name": "YOASOBI"},
+				},
+				"al": map[string]interface{}{
+					"id":     205,
+					"name":   "THE BOOK 2",
+					"picUrl": "https://p1.music.126.net/thebook2/109951164005.jpg",
+				},
+			},
+		},
+		{
+			"playCount": 0,
+			"score":     45,
+			"song": map[string]interface{}{
+				"id":   10,
+				"name": "怪物",
+				"ar": []interface{}{
+					map[string]interface{}{"id": 110, "name": "YOASOBI"},
+				},
+				"al": map[string]interface{}{
+					"id":     206,
+					"name":   "Imitaion",
+					"picUrl": "https://p1.music.126.net/imitation/109951164006.jpg",
 				},
 			},
 		},
@@ -317,6 +505,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 
 	topArtists := domain.DeriveTopArtists(fixtureData, 5)
 	topTracks := domain.DeriveTopTracks(fixtureData, 5)
+	topAlbums := domain.DeriveTopAlbums(fixtureData, 9)
 
 	if err := persist.Write(".", fixtureData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
@@ -326,6 +515,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 		derived := map[string]interface{}{
 			"topArtists": topArtists,
 			"topTracks":  topTracks,
+			"topAlbums":  topAlbums,
 		}
 
 		data, err := json.MarshalIndent(derived, "", "  ")
@@ -373,6 +563,26 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
+		placeholderBase64 := "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+		albumEntries := make([]render.TopAlbumEntry, len(topAlbums))
+		for i, a := range topAlbums {
+			albumEntries[i] = render.TopAlbumEntry{
+				Name:        a.Name,
+				CoverBase64: placeholderBase64,
+				IsFirst:     i == 0,
+			}
+		}
+		topAlbumsSVG, err := render.RenderTopAlbums(render.TopAlbumsData{
+			CSS:    css,
+			Albums: albumEntries,
+		})
+		if err != nil {
+			return fmt.Errorf("render top albums: %w", err)
+		}
+		if err := os.WriteFile(fmt.Sprintf("%s/top-albums.svg", outputDir), topAlbumsSVG, 0o644); err != nil {
+			return fmt.Errorf("write top-albums.svg: %w", err)
+		}
+
 		cardSVG, err := render.RenderCard(render.CardData{
 			CSS:          css,
 			AvatarBase64: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
@@ -390,11 +600,11 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 			return fmt.Errorf("write card.svg: %w", err)
 		}
 
-		fmt.Printf("Rendered 3 SVG files to %s\n", outputDir)
+		fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
 	}
 
-	fmt.Printf("Fixture mode: topArtists=%d, topTracks=%d\n",
-		len(topArtists), len(topTracks))
+	fmt.Printf("Fixture mode: topArtists=%d, topTracks=%d, topAlbums=%d\n",
+		len(topArtists), len(topTracks), len(topAlbums))
 
 	return nil
 }
@@ -526,6 +736,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 
 	topArtists := domain.DeriveTopArtists(weekData, 5)
 	topTracks := domain.DeriveTopTracks(weekData, 5)
+	topAlbums := domain.DeriveTopAlbums(weekData, 9)
 
 	if err := persist.Write(".", weekData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
@@ -563,6 +774,33 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
+		prodAlbumEntries := make([]render.TopAlbumEntry, len(topAlbums))
+		for i, a := range topAlbums {
+			cover := "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+			if a.CoverURL != "" {
+				if fetched, err := render.FetchAndEncode(a.CoverURL); err == nil {
+					cover = fetched
+				} else {
+					fmt.Fprintf(os.Stderr, "Fetch album cover failed for %q: %v, using fallback\n", a.Name, err)
+				}
+			}
+			prodAlbumEntries[i] = render.TopAlbumEntry{
+				Name:        a.Name,
+				CoverBase64: cover,
+				IsFirst:     i == 0,
+			}
+		}
+		topAlbumsSVG, err := render.RenderTopAlbums(render.TopAlbumsData{
+			CSS:    css,
+			Albums: prodAlbumEntries,
+		})
+		if err != nil {
+			return fmt.Errorf("render top albums: %w", err)
+		}
+		if err := os.WriteFile(fmt.Sprintf("%s/top-albums.svg", outputDir), topAlbumsSVG, 0o644); err != nil {
+			return fmt.Errorf("write top-albums.svg: %w", err)
+		}
+
 		if !authFailed {
 			cardSVG, err := render.RenderCard(render.CardData{
 				CSS:          css,
@@ -580,9 +818,9 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 			if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0o644); err != nil {
 				return fmt.Errorf("write card.svg: %w", err)
 			}
-			fmt.Printf("Rendered 3 SVG files to %s\n", outputDir)
+			fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
 		} else {
-			fmt.Printf("Rendered 2 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
+			fmt.Printf("Rendered 3 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
 		}
 	}
 
@@ -618,6 +856,12 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 				return fmt.Errorf("read top-tracks.svg: %w", err)
 			}
 			files = append(files, publish.FileToCommit{Path: "top-tracks.svg", Content: topTracksSVG})
+
+			topAlbumsSVGFile, err := os.ReadFile(fmt.Sprintf("%s/top-albums.svg", outputDir))
+			if err != nil {
+				return fmt.Errorf("read top-albums.svg: %w", err)
+			}
+			files = append(files, publish.FileToCommit{Path: "top-albums.svg", Content: topAlbumsSVGFile})
 
 			weekDataJSON, err := os.ReadFile("data/week-data.json")
 			if err != nil {

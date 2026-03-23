@@ -13,8 +13,7 @@ type CardInput struct {
 
 // Artifacts holds all derived data to persist
 type Artifacts struct {
-	TopArtists     []domain.Artist
-	TopTracks      []domain.Track
-	WeeklyOverview domain.Overview
-	CardInput      CardInput
+	TopArtists []domain.Artist
+	TopTracks  []domain.Track
+	CardInput  CardInput
 }

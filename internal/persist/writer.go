@@ -13,7 +13,7 @@ func Write(rootDir string, weekData []map[string]interface{}) error {
 		return fmt.Errorf("create data directory: %w", err)
 	}
 
-	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "card-input.json"}
 	for _, file := range legacyFiles {
 		path := filepath.Join(dataDir, file)
 		os.Remove(path)

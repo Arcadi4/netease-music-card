@@ -18,9 +18,6 @@ var topArtistsTemplate string
 //go:embed templates/top-tracks.tmpl
 var topTracksTemplate string
 
-//go:embed templates/weekly-overview.tmpl
-var weeklyOverviewTemplate string
-
 type CardData struct {
 	CSS          string
 	AvatarBase64 string
@@ -40,14 +37,6 @@ type TopArtistsData struct {
 type TopTracksData struct {
 	CSS    string
 	Tracks []domain.Track
-}
-
-type WeeklyOverviewData struct {
-	CSS             string
-	TotalPlays      int
-	UniqueSongs     int
-	UniqueArtists   int
-	RepeatIntensity string
 }
 
 func RenderCard(data CardData) ([]byte, error) {
@@ -88,20 +77,6 @@ func RenderTopTracks(data TopTracksData) ([]byte, error) {
 	}
 
 	tmpl, err := template.New("top-tracks").Funcs(funcMap).Parse(topTracksTemplate)
-	if err != nil {
-		return nil, fmt.Errorf("parse template: %w", err)
-	}
-
-	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
-		return nil, fmt.Errorf("execute template: %w", err)
-	}
-
-	return buf.Bytes(), nil
-}
-
-func RenderWeeklyOverview(data WeeklyOverviewData) ([]byte, error) {
-	tmpl, err := template.New("weekly-overview").Parse(weeklyOverviewTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("parse template: %w", err)
 	}

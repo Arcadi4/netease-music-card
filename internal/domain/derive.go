@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -123,57 +122,6 @@ func DeriveTopTracks(weekData []map[string]interface{}, n int) []Track {
 		tracks = tracks[:n]
 	}
 	return tracks
-}
-
-func DeriveWeeklyOverview(weekData []map[string]interface{}) Overview {
-	if len(weekData) == 0 {
-		return Overview{
-			TotalPlays:      0,
-			UniqueSongs:     0,
-			UniqueArtists:   0,
-			RepeatIntensity: "0",
-		}
-	}
-
-	uniqueSongIDs := make(map[int64]bool)
-	uniqueArtistIDs := make(map[int64]bool)
-	totalPlays := 0
-	maxPlayCount := 0
-
-	for _, entry := range weekData {
-		plays := safePlays(entry)
-		totalPlays += plays
-		if plays > maxPlayCount {
-			maxPlayCount = plays
-		}
-
-		song := getSong(entry)
-		songID := getInt64(song, "id")
-		if songID != 0 {
-			uniqueSongIDs[songID] = true
-		}
-
-		artists := getArtists(entry)
-		for _, ar := range artists {
-			artistID := getInt64(ar, "id")
-			if artistID != 0 {
-				uniqueArtistIDs[artistID] = true
-			}
-		}
-	}
-
-	repeatIntensity := "0"
-	if totalPlays > 0 {
-		intensity := float64(maxPlayCount) / float64(totalPlays) * 100
-		repeatIntensity = fmt.Sprintf("%.1f", intensity)
-	}
-
-	return Overview{
-		TotalPlays:      totalPlays,
-		UniqueSongs:     len(uniqueSongIDs),
-		UniqueArtists:   len(uniqueArtistIDs),
-		RepeatIntensity: repeatIntensity,
-	}
 }
 
 func getInt(m map[string]interface{}, key string) int {

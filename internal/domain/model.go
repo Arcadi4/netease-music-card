@@ -13,11 +13,3 @@ type Track struct {
 	Artists string `json:"artists"`
 	Plays   int    `json:"plays"`
 }
-
-// Overview represents weekly listening statistics
-type Overview struct {
-	TotalPlays      int    `json:"totalPlays"`
-	UniqueSongs     int    `json:"uniqueSongs"`
-	UniqueArtists   int    `json:"uniqueArtists"`
-	RepeatIntensity string `json:"repeatIntensity"`
-}

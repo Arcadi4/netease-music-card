@@ -34,13 +34,3 @@ func ValidateTopTracksMarkers(svg []byte) error {
 	}
 	return nil
 }
-
-func ValidateWeeklyOverviewMarkers(svg []byte) error {
-	required := []string{"<foreignObject", "<style>", "本周概览"}
-	for _, marker := range required {
-		if !bytes.Contains(svg, []byte(marker)) {
-			return fmt.Errorf("missing required marker: %s", marker)
-		}
-	}
-	return nil
-}

@@ -40,7 +40,7 @@ func TestWrite_OverwritesExistingFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "card-input.json"}
 	for _, file := range legacyFiles {
 		if err := os.WriteFile(filepath.Join(dataDir, file), []byte(`{"old": "data"}`), 0644); err != nil {
 			t.Fatal(err)
@@ -104,7 +104,7 @@ func TestWrite_CreatesWeekDataFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	legacyFiles := []string{"top-artists.json", "top-tracks.json", "weekly-overview.json", "card-input.json"}
+	legacyFiles := []string{"top-artists.json", "top-tracks.json", "card-input.json"}
 	for _, file := range legacyFiles {
 		if err := os.WriteFile(filepath.Join(dataDir, file), []byte(`{"legacy": true}`), 0644); err != nil {
 			t.Fatal(err)

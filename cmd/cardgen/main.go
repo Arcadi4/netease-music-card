@@ -301,7 +301,6 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 
 	topArtists := domain.DeriveTopArtists(fixtureData, 5)
 	topTracks := domain.DeriveTopTracks(fixtureData, 5)
-	overview := domain.DeriveWeeklyOverview(fixtureData)
 
 	if err := persist.Write(".", fixtureData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
@@ -311,7 +310,6 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 		derived := map[string]interface{}{
 			"topArtists": topArtists,
 			"topTracks":  topTracks,
-			"overview":   overview,
 		}
 
 		data, err := json.MarshalIndent(derived, "", "  ")
@@ -359,20 +357,6 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
-		overviewSVG, err := render.RenderWeeklyOverview(render.WeeklyOverviewData{
-			CSS:             css,
-			TotalPlays:      overview.TotalPlays,
-			UniqueSongs:     overview.UniqueSongs,
-			UniqueArtists:   overview.UniqueArtists,
-			RepeatIntensity: overview.RepeatIntensity,
-		})
-		if err != nil {
-			return fmt.Errorf("render weekly overview: %w", err)
-		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0o644); err != nil {
-			return fmt.Errorf("write weekly-overview.svg: %w", err)
-		}
-
 		cardSVG, err := render.RenderCard(render.CardData{
 			CSS:          css,
 			AvatarBase64: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
@@ -390,11 +374,11 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 			return fmt.Errorf("write card.svg: %w", err)
 		}
 
-		fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
+		fmt.Printf("Rendered 3 SVG files to %s\n", outputDir)
 	}
 
-	fmt.Printf("Fixture mode: topArtists=%d, topTracks=%d, totalPlays=%d\n",
-		len(topArtists), len(topTracks), overview.TotalPlays)
+	fmt.Printf("Fixture mode: topArtists=%d, topTracks=%d\n",
+		len(topArtists), len(topTracks))
 
 	return nil
 }
@@ -526,7 +510,6 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 
 	topArtists := domain.DeriveTopArtists(weekData, 5)
 	topTracks := domain.DeriveTopTracks(weekData, 5)
-	overview := domain.DeriveWeeklyOverview(weekData)
 
 	if err := persist.Write(".", weekData); err != nil {
 		return fmt.Errorf("persist data: %w", err)
@@ -564,20 +547,6 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 			return fmt.Errorf("write top-tracks.svg: %w", err)
 		}
 
-		overviewSVG, err := render.RenderWeeklyOverview(render.WeeklyOverviewData{
-			CSS:             css,
-			TotalPlays:      overview.TotalPlays,
-			UniqueSongs:     overview.UniqueSongs,
-			UniqueArtists:   overview.UniqueArtists,
-			RepeatIntensity: overview.RepeatIntensity,
-		})
-		if err != nil {
-			return fmt.Errorf("render weekly overview: %w", err)
-		}
-		if err := os.WriteFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir), overviewSVG, 0o644); err != nil {
-			return fmt.Errorf("write weekly-overview.svg: %w", err)
-		}
-
 		if !authFailed {
 			cardSVG, err := render.RenderCard(render.CardData{
 				CSS:          css,
@@ -595,9 +564,9 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 			if err := os.WriteFile(fmt.Sprintf("%s/card.svg", outputDir), cardSVG, 0o644); err != nil {
 				return fmt.Errorf("write card.svg: %w", err)
 			}
-			fmt.Printf("Rendered 4 SVG files to %s\n", outputDir)
+			fmt.Printf("Rendered 3 SVG files to %s\n", outputDir)
 		} else {
-			fmt.Printf("Rendered 3 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
+			fmt.Printf("Rendered 2 SVG files to %s (skipped card.svg due to auth failure)\n", outputDir)
 		}
 	}
 
@@ -633,12 +602,6 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 				return fmt.Errorf("read top-tracks.svg: %w", err)
 			}
 			files = append(files, publish.FileToCommit{Path: "top-tracks.svg", Content: topTracksSVG})
-
-			overviewSVG, err := os.ReadFile(fmt.Sprintf("%s/weekly-overview.svg", outputDir))
-			if err != nil {
-				return fmt.Errorf("read weekly-overview.svg: %w", err)
-			}
-			files = append(files, publish.FileToCommit{Path: "weekly-overview.svg", Content: overviewSVG})
 
 			weekDataJSON, err := os.ReadFile("data/week-data.json")
 			if err != nil {

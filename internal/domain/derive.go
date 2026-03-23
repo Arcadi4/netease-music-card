@@ -202,3 +202,65 @@ func getArtistNames(song map[string]interface{}) string {
 	}
 	return ""
 }
+
+func getAlbum(entry map[string]interface{}) map[string]interface{} {
+	song := getSong(entry)
+	if al, ok := song["al"].(map[string]interface{}); ok {
+		return al
+	}
+	return map[string]interface{}{}
+}
+
+func DeriveTopAlbums(weekData []map[string]interface{}, n int) []Album {
+	if len(weekData) == 0 {
+		return []Album{}
+	}
+
+	allPlayCountZero := true
+	for _, entry := range weekData {
+		if getInt(entry, "playCount") > 0 {
+			allPlayCountZero = false
+			break
+		}
+	}
+
+	getPlays := func(entry map[string]interface{}) int {
+		if allPlayCountZero {
+			return safePlays(entry)
+		}
+		return getInt(entry, "playCount")
+	}
+
+	albumMap := make(map[int64]*Album)
+	for _, entry := range weekData {
+		al := getAlbum(entry)
+		id := getInt64(al, "id")
+		if id == 0 {
+			continue
+		}
+
+		if _, exists := albumMap[id]; !exists {
+			albumMap[id] = &Album{
+				ID:       id,
+				Name:     getString(al, "name"),
+				CoverURL: getString(al, "picUrl"),
+				Plays:    0,
+			}
+		}
+		albumMap[id].Plays += getPlays(entry)
+	}
+
+	result := make([]Album, 0, len(albumMap))
+	for _, album := range albumMap {
+		result = append(result, *album)
+	}
+
+	sort.SliceStable(result, func(i, j int) bool {
+		return result[i].Plays > result[j].Plays
+	})
+
+	if len(result) > n {
+		result = result[:n]
+	}
+	return result
+}

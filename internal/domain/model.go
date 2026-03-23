@@ -13,3 +13,11 @@ type Track struct {
 	Artists string `json:"artists"`
 	Plays   int    `json:"plays"`
 }
+
+// Album represents a music album with aggregated play count (internal use only)
+type Album struct {
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	CoverURL string `json:"coverUrl"`
+	Plays    int    `json:"plays"`
+}

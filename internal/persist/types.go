@@ -15,5 +15,6 @@ type CardInput struct {
 type Artifacts struct {
 	TopArtists []domain.Artist
 	TopTracks  []domain.Track
+	TopAlbums  []domain.Album
 	CardInput  CardInput
 }

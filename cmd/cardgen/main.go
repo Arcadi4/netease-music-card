@@ -123,6 +123,22 @@ func main() {
 	}
 }
 
+func toArtistEntries(artists []domain.Artist) []render.ArtistEntry {
+	if len(artists) == 0 {
+		return []render.ArtistEntry{}
+	}
+	maxPlays := artists[0].Plays
+	entries := make([]render.ArtistEntry, 0, len(artists))
+	for _, a := range artists {
+		fontSize := 12
+		if maxPlays > 0 {
+			fontSize = 12 + int(float64(a.Plays)/float64(maxPlays)*8)
+		}
+		entries = append(entries, render.ArtistEntry{Name: a.Name, FontSize: fontSize})
+	}
+	return entries
+}
+
 func runSelfCheckWeapi() error {
 	testData := map[string]interface{}{
 		"test": "data",
@@ -337,7 +353,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 
 		topArtistsSVG, err := render.RenderTopArtists(render.TopArtistsData{
 			CSS:     css,
-			Artists: topArtists,
+			Artists: toArtistEntries(topArtists),
 		})
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)
@@ -527,7 +543,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 
 		topArtistsSVG, err := render.RenderTopArtists(render.TopArtistsData{
 			CSS:     css,
-			Artists: topArtists,
+			Artists: toArtistEntries(topArtists),
 		})
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)

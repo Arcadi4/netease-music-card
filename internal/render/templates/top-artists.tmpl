@@ -8,12 +8,11 @@
 .header { margin-bottom: 15px; }
 .title { font-size: 18px; font-weight: bold; color: #333; }
 .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
-.row { display: flex; align-items: center; margin-bottom: 12px; }
-.row:last-child { margin-bottom: 0; }
-.rank { background: #BA0400; color: white; font-size: 14px; font-weight: bold; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
-.info { flex-grow: 1; overflow: hidden; }
-.name { font-size: 14px; color: #333; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.plays { font-size: 12px; color: #888; margin-top: 2px; }
+.cloud { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 8px; }
+.tag { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+.tag:nth-child(3n+1) { background: #fff0f0; color: #BA0400; }
+.tag:nth-child(3n+2) { background: #f0f4ff; color: #3b5bdb; }
+.tag:nth-child(3n+3) { background: #f0fff4; color: #2f9e44; }
 .empty-state { flex-grow: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #888; }
 </style>
 <div class="card">
@@ -21,16 +20,12 @@
 <div class="title">本周最爱歌手</div>
 <div class="subtitle">Weekly Top Artists</div>
 </div>
-<div class="list">
-{{if .Artists}}{{range $i, $a := .Artists}}<div class="row">
-<div class="rank">{{add $i 1}}</div>
-<div class="info">
-<div class="name">{{$a.Name}}</div>
-<div class="plays">{{$a.Plays}} plays</div>
+{{if .Artists}}
+<div class="cloud">
+{{range .Artists}}<span class="tag" style="font-size: {{.FontSize}}px;">{{.Name}}</span>
+{{end}}
 </div>
-</div>
-{{end}}{{else}}<div class="empty-state">暂无数据 / No data</div>{{end}}
-</div>
+{{else}}<div class="empty-state">暂无数据 / No data</div>{{end}}
 </div>
 </div>
 </foreignObject>

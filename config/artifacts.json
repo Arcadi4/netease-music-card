@@ -3,12 +3,14 @@
     "svg": {
       "card": "card.svg",
       "topArtists": "top-artists.svg",
-      "topTracks": "top-tracks.svg"
+      "topTracks": "top-tracks.svg",
+      "topAlbums": "top-albums.svg"
     },
     "png": {
       "card": "card.png",
       "topArtists": "top-artists.png",
-      "topTracks": "top-tracks.png"
+      "topTracks": "top-tracks.png",
+      "topAlbums": "top-albums.png"
     },
     "json": {
       "normalized": "music-data.json"
@@ -17,6 +19,7 @@
   "dimensions": {
     "card": { "width": 310, "height": 490 },
     "topArtists": { "width": 310, "height": 320 },
-    "topTracks": { "width": 310, "height": 330 }
+    "topTracks": { "width": 310, "height": 330 },
+    "topAlbums": { "width": 310, "height": 370 }
   }
 }

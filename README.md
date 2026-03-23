@@ -10,6 +10,9 @@
  <td>
   <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/top-tracks.svg">
  </td>
+ <td>
+  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/top-albums.svg">
+ </td>
 </table>
 
 <h1>Netease Music Cards</h1>

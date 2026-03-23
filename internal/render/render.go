@@ -18,6 +18,9 @@ var topArtistsTemplate string
 //go:embed templates/top-tracks.tmpl
 var topTracksTemplate string
 
+//go:embed templates/top-albums.tmpl
+var topAlbumsTemplate string
+
 type CardData struct {
 	CSS          string
 	AvatarBase64 string
@@ -29,14 +32,30 @@ type CardData struct {
 	LogoBase64   string
 }
 
+type ArtistEntry struct {
+	Name     string
+	FontSize int
+}
+
 type TopArtistsData struct {
 	CSS     string
-	Artists []domain.Artist
+	Artists []ArtistEntry
 }
 
 type TopTracksData struct {
 	CSS    string
 	Tracks []domain.Track
+}
+
+type TopAlbumEntry struct {
+	Name        string
+	CoverBase64 string
+	IsFirst     bool
+}
+
+type TopAlbumsData struct {
+	CSS    string
+	Albums []TopAlbumEntry
 }
 
 func RenderCard(data CardData) ([]byte, error) {
@@ -54,11 +73,7 @@ func RenderCard(data CardData) ([]byte, error) {
 }
 
 func RenderTopArtists(data TopArtistsData) ([]byte, error) {
-	funcMap := template.FuncMap{
-		"add": func(a, b int) int { return a + b },
-	}
-
-	tmpl, err := template.New("top-artists").Funcs(funcMap).Parse(topArtistsTemplate)
+	tmpl, err := template.New("top-artists").Parse(topArtistsTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("parse template: %w", err)
 	}
@@ -77,6 +92,20 @@ func RenderTopTracks(data TopTracksData) ([]byte, error) {
 	}
 
 	tmpl, err := template.New("top-tracks").Funcs(funcMap).Parse(topTracksTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("parse template: %w", err)
+	}
+
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return nil, fmt.Errorf("execute template: %w", err)
+	}
+
+	return buf.Bytes(), nil
+}
+
+func RenderTopAlbums(data TopAlbumsData) ([]byte, error) {
+	tmpl, err := template.New("top-albums").Parse(topAlbumsTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("parse template: %w", err)
 	}

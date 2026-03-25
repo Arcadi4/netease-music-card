@@ -14,9 +14,9 @@
 <line x1="141" y1="120" x2="241" y2="120" stroke="#ddd" stroke-width="1"/>
 <line x1="141" y1="120" x2="141" y2="220" stroke="#ddd" stroke-width="1"/>
 <line x1="141" y1="120" x2="41" y2="120" stroke="#ddd" stroke-width="1"/>
-<polygon points="141.0,107.0 226.0,120.0 141.0,126.0 131.0,120.0" fill="rgba(186,4,0,0.15)" stroke="#BA0400" stroke-width="2"/>
-<text x="141" y="12" text-anchor="middle" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">忠诚 13</text>
-<text x="248" y="124" text-anchor="start" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">多样 85</text>
+<polygon points="141.0,104.0 231.0,120.0 141.0,126.0 131.0,120.0" fill="rgba(186,4,0,0.15)" stroke="#BA0400" stroke-width="2"/>
+<text x="141" y="12" text-anchor="middle" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">忠诚 16</text>
+<text x="248" y="124" text-anchor="start" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">多样 90</text>
 <text x="141" y="238" text-anchor="middle" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">专注 6</text>
 <text x="34" y="124" text-anchor="end" font-size="11" fill="#555" font-family="'PingFang SC',sans-serif">深度 10</text>
 </svg>

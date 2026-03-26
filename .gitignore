@@ -8,3 +8,9 @@ node_modules
 
 # env files
 .env
+
+# object files
+cardgen
+
+# macos resources
+.DS_Store

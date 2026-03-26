@@ -1,0 +1,36 @@
+<svg width="310" height="320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<foreignObject width="310" height="320">
+<div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
+<style>
+
+* { box-sizing: border-box; font-family: 'PingFang SC', 'Helvetica Neue', 'Segoe UI', 'Microsoft YaHei', sans-serif !important; margin: 0; padding: 0; }
+.card { background: white; border-radius: 10px; box-shadow: gray 0 0 10px; overflow: hidden; padding: 20px; height: max-content; display: flex; flex-direction: column; }
+.header { margin-bottom: 15px; }
+.title { font-size: 18px; font-weight: bold; color: #333; }
+.subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+.cloud { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 8px; }
+.tag { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+.tag:nth-child(3n+1) { background: #fff0f0; color: #BA0400; }
+.tag:nth-child(3n+2) { background: #f0f4ff; color: #3b5bdb; }
+.tag:nth-child(3n+3) { background: #f0fff4; color: #2f9e44; }
+.empty-state { flex-grow: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #888; }
+</style>
+<div class="card">
+<div class="header">
+<div class="title">本周最爱歌手</div>
+<div class="subtitle">Weekly Top Artists</div>
+</div>
+
+<div class="cloud">
+<span class="tag" style="font-size: 20px;">Tielle</span>
+<span class="tag" style="font-size: 18px;">SawanoHiroyuki[nZk]</span>
+<span class="tag" style="font-size: 14px;">ヨルシカ</span>
+<span class="tag" style="font-size: 13px;">十明</span>
+<span class="tag" style="font-size: 13px;">Aimer</span>
+
+</div>
+
+</div>
+</div>
+</foreignObject>
+</svg>

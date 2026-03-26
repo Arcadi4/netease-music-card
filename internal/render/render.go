@@ -21,6 +21,38 @@ var topTracksTemplate string
 //go:embed templates/top-albums.tmpl
 var topAlbumsTemplate string
 
+const (
+	// user(52) + hello(43) + song(34) + singer(24) + bars(33) + cover(300) + padding+shadow(44)
+	CardHeight = 530
+)
+
+func TopAlbumsHeight(n int) int {
+	if n == 0 {
+		return 400
+	}
+	extraRows := 0
+	if n > 3 {
+		extraRows = (n-4)/3 + 1
+	}
+	gridHeight := (2+extraRows)*87 + (1+extraRows)*4
+	// header(51) + card-padding(40) + container-padding(10) + shadow-clearance(29)
+	return 130 + gridHeight
+}
+
+func TopTracksHeight(n int) int {
+	// header(100) + n×row(56px: rank24 + title17 + sub14+2margin + row-margin12)
+	return 100 + n*56
+}
+
+func TopArtistsHeight(n int) int {
+	// CJK tag widths mean ~2 per row; 80px per row (tag36 + gap8 + line-height variance)
+	rows := (n + 1) / 2
+	if rows < 1 {
+		rows = 1
+	}
+	return 110 + rows*80
+}
+
 type CardData struct {
 	CSS          string
 	AvatarBase64 string
@@ -30,6 +62,7 @@ type CardData struct {
 	PlayCount    int
 	CoverBase64  string
 	LogoBase64   string
+	Height       int
 }
 
 type ArtistEntry struct {
@@ -40,11 +73,13 @@ type ArtistEntry struct {
 type TopArtistsData struct {
 	CSS     string
 	Artists []ArtistEntry
+	Height  int
 }
 
 type TopTracksData struct {
 	CSS    string
 	Tracks []domain.Track
+	Height int
 }
 
 type TopAlbumEntry struct {
@@ -56,6 +91,7 @@ type TopAlbumEntry struct {
 type TopAlbumsData struct {
 	CSS    string
 	Albums []TopAlbumEntry
+	Height int
 }
 
 func RenderCard(data CardData) ([]byte, error) {

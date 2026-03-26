@@ -544,6 +544,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 		topArtistsSVG, err := render.RenderTopArtists(render.TopArtistsData{
 			CSS:     css,
 			Artists: toArtistEntries(topArtists),
+			Height:  render.TopArtistsHeight(len(topArtists)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)
@@ -555,6 +556,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 		topTracksSVG, err := render.RenderTopTracks(render.TopTracksData{
 			CSS:    css,
 			Tracks: topTracks,
+			Height: render.TopTracksHeight(len(topTracks)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top tracks: %w", err)
@@ -575,6 +577,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 		topAlbumsSVG, err := render.RenderTopAlbums(render.TopAlbumsData{
 			CSS:    css,
 			Albums: albumEntries,
+			Height: render.TopAlbumsHeight(len(albumEntries)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top albums: %w", err)
@@ -592,6 +595,7 @@ func runFixtureMode(dumpPath string, skipRender, skipPublish, skipPNG, zeroPlay 
 			PlayCount:    42,
 			CoverBase64:  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
 			LogoBase64:   render.NeteaseLogoBase64,
+			Height:       render.CardHeight,
 		})
 		if err != nil {
 			return fmt.Errorf("render card: %w", err)
@@ -755,6 +759,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 		topArtistsSVG, err := render.RenderTopArtists(render.TopArtistsData{
 			CSS:     css,
 			Artists: toArtistEntries(topArtists),
+			Height:  render.TopArtistsHeight(len(topArtists)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top artists: %w", err)
@@ -766,6 +771,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 		topTracksSVG, err := render.RenderTopTracks(render.TopTracksData{
 			CSS:    css,
 			Tracks: topTracks,
+			Height: render.TopTracksHeight(len(topTracks)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top tracks: %w", err)
@@ -793,6 +799,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 		topAlbumsSVG, err := render.RenderTopAlbums(render.TopAlbumsData{
 			CSS:    css,
 			Albums: prodAlbumEntries,
+			Height: render.TopAlbumsHeight(len(prodAlbumEntries)),
 		})
 		if err != nil {
 			return fmt.Errorf("render top albums: %w", err)
@@ -811,6 +818,7 @@ func runProductionPipeline(cfg *config.Config, outputDir, stylePath string, skip
 				PlayCount:    playCount,
 				CoverBase64:  coverBase64,
 				LogoBase64:   render.NeteaseLogoBase64,
+				Height:       render.CardHeight,
 			})
 			if err != nil {
 				return fmt.Errorf("render card: %w", err)

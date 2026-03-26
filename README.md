@@ -1,9 +1,8 @@
 <div align="center">
+ 
+<image height=50% src="https://github.com/Arcadi4/netease-music-card/blob/svg/card.svg">
 
 <table>
- <td>
-  <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/card.svg">
- </td>
  <td>
   <image height=200 src="https://github.com/Arcadi4/netease-music-card/blob/svg/top-artists.svg">
  </td>

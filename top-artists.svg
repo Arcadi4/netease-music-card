@@ -1,5 +1,5 @@
-<svg width="310" height="350" viewBox="0 0 310 350" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<foreignObject width="310" height="350">
+<svg width="310" height="190" viewBox="0 0 310 190" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<foreignObject width="310" height="190">
 <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
 <style>
 
@@ -20,16 +20,7 @@
 <div class="title">本周最爱歌手</div>
 <div class="subtitle">Weekly Top Artists</div>
 </div>
-
-<div class="cloud">
-<span class="tag" style="font-size: 20px;">Tielle</span>
-<span class="tag" style="font-size: 16px;">SawanoHiroyuki[nZk]</span>
-<span class="tag" style="font-size: 16px;">ヨルシカ</span>
-<span class="tag" style="font-size: 16px;">十明</span>
-<span class="tag" style="font-size: 15px;">RADWIMPS</span>
-
-</div>
-
+<div class="empty-state">暂无数据 / No data</div>
 </div>
 </div>
 </foreignObject>

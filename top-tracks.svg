@@ -1,5 +1,5 @@
-<svg width="310" height="380" viewBox="0 0 310 380" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<foreignObject width="310" height="380">
+<svg width="310" height="100" viewBox="0 0 310 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<foreignObject width="310" height="100">
 <div xmlns="http://www.w3.org/1999/xhtml" class="container" style="padding: 5px;">
 <style>
 
@@ -23,47 +23,7 @@
 <div class="subtitle">Weekly Top Tracks</div>
 </div>
 <div class="list">
-<div class="row">
-<div class="rank">1</div>
-<div class="info">
-<div class="title">GHOST</div>
-<div class="sub">Tielle</div>
-</div>
-<div class="plays">13</div>
-</div>
-<div class="row">
-<div class="rank">2</div>
-<div class="info">
-<div class="title">間人間</div>
-<div class="sub">ずっと真夜中でいいのに。</div>
-</div>
-<div class="plays">4</div>
-</div>
-<div class="row">
-<div class="rank">3</div>
-<div class="info">
-<div class="title">PROVANT</div>
-<div class="sub">SawanoHiroyuki[nZk] / Jean-Ken Johnny / TAKUMA</div>
-</div>
-<div class="plays">4</div>
-</div>
-<div class="row">
-<div class="rank">4</div>
-<div class="info">
-<div class="title">ヨロヨロ</div>
-<div class="sub">はしメロ / 7co</div>
-</div>
-<div class="plays">4</div>
-</div>
-<div class="row">
-<div class="rank">5</div>
-<div class="info">
-<div class="title">NEW ERA</div>
-<div class="sub">十明</div>
-</div>
-<div class="plays">4</div>
-</div>
-
+<div class="empty">暂无数据 / No data</div>
 </div>
 </div>
 </div>
